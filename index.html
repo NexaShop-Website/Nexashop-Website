@@ -1,0 +1,2695 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>NexaShop — Assistant IA pour commerces</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+:root{
+--primary:#635bff;
+--primary2:#8b5cf6;
+--dark:#111827;
+--text:#1f2937;
+--muted:#6b7280;
+--bg:#f6f7fb;
+--card:#fff;
+--border:#e5e7eb;
+--success:#10b981;
+--danger:#ef4444;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:var(--bg);
+color:var(--text);
+}
+
+button,input,textarea,select{
+font-family:inherit;
+}
+
+button{
+cursor:pointer;
+}
+
+header{
+background:white;
+border-bottom:1px solid var(--border);
+position:sticky;
+top:0;
+z-index:100;
+}
+
+.nav{
+max-width:1200px;
+margin:auto;
+padding:15px 20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+font-size:25px;
+font-weight:900;
+color:var(--primary);
+}
+
+.nav-buttons{
+display:flex;
+gap:8px;
+}
+
+.btn{
+border:0;
+padding:12px 17px;
+border-radius:10px;
+font-weight:700;
+transition:.2s;
+}
+
+.btn:hover{
+transform:translateY(-1px);
+}
+
+.btn-primary{
+background:var(--primary);
+color:white;
+}
+
+.btn-dark{
+background:var(--dark);
+color:white;
+}
+
+.btn-light{
+background:white;
+color:var(--dark);
+border:1px solid var(--border);
+}
+
+.btn-danger{
+background:#fee2e2;
+color:#dc2626;
+}
+
+.btn:disabled{
+opacity:.5;
+cursor:not-allowed;
+}
+
+.hero{
+max-width:900px;
+margin:auto;
+text-align:center;
+padding:80px 20px;
+}
+
+.badge{
+display:inline-block;
+background:#eeebff;
+color:#564de0;
+padding:8px 15px;
+border-radius:30px;
+font-weight:700;
+margin-bottom:20px;
+}
+
+.hero h1{
+font-size:clamp(42px,8vw,72px);
+line-height:1;
+letter-spacing:-3px;
+}
+
+.gradient{
+background:linear-gradient(90deg,var(--primary),var(--primary2));
+-webkit-background-clip:text;
+color:transparent;
+}
+
+.hero p{
+max-width:700px;
+margin:25px auto;
+color:var(--muted);
+font-size:18px;
+line-height:1.6;
+}
+
+.hero-buttons{
+display:flex;
+justify-content:center;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:30px 20px 70px;
+}
+
+.section-title{
+text-align:center;
+margin-bottom:30px;
+}
+
+.section-title h2{
+font-size:35px;
+}
+
+.section-title p{
+color:var(--muted);
+margin-top:8px;
+}
+
+.features{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:18px;
+}
+
+.feature{
+background:white;
+border:1px solid var(--border);
+border-radius:20px;
+padding:25px;
+}
+
+.feature-icon{
+font-size:35px;
+margin-bottom:12px;
+}
+
+.feature p{
+color:var(--muted);
+margin-top:8px;
+line-height:1.5;
+}
+
+/* AUTH */
+
+.auth-page{
+display:none;
+min-height:calc(100vh - 70px);
+padding:50px 20px;
+}
+
+.auth-page.active{
+display:flex;
+justify-content:center;
+align-items:flex-start;
+}
+
+.auth-card{
+width:100%;
+max-width:450px;
+background:white;
+border:1px solid var(--border);
+border-radius:20px;
+padding:30px;
+}
+
+.auth-card h1{
+margin-bottom:8px;
+}
+
+.auth-card>p{
+color:var(--muted);
+margin-bottom:25px;
+}
+
+.form-group{
+margin-bottom:17px;
+}
+
+.form-group label{
+display:block;
+font-weight:700;
+font-size:14px;
+margin-bottom:7px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+width:100%;
+padding:13px;
+border:1px solid #dfe3ea;
+border-radius:10px;
+font-size:15px;
+outline:none;
+background:white;
+}
+
+.form-group textarea{
+min-height:120px;
+resize:vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+border-color:var(--primary);
+box-shadow:0 0 0 3px rgba(99,91,255,.1);
+}
+
+.auth-switch{
+text-align:center;
+margin-top:20px;
+color:var(--muted);
+}
+
+.auth-switch button{
+border:0;
+background:none;
+color:var(--primary);
+font-weight:700;
+}
+
+.hidden{
+display:none!important;
+}
+
+/* DASHBOARD */
+
+.dashboard{
+display:none;
+max-width:1200px;
+margin:auto;
+padding:30px 20px 80px;
+}
+
+.dashboard.active{
+display:block;
+}
+
+.dashboard-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+margin-bottom:25px;
+}
+
+.dashboard-head p{
+color:var(--muted);
+margin-top:5px;
+}
+
+.dashboard-grid{
+display:grid;
+grid-template-columns:230px 1fr;
+gap:20px;
+}
+
+.sidebar{
+background:white;
+border:1px solid var(--border);
+border-radius:18px;
+padding:12px;
+height:max-content;
+position:sticky;
+top:85px;
+}
+
+.side-btn{
+width:100%;
+text-align:left;
+background:white;
+border:0;
+padding:13px;
+border-radius:10px;
+font-weight:700;
+color:#4b5563;
+margin-bottom:3px;
+}
+
+.side-btn:hover,
+.side-btn.active{
+background:#efedff;
+color:var(--primary);
+}
+
+.panel{
+background:white;
+border:1px solid var(--border);
+border-radius:20px;
+padding:25px;
+margin-bottom:20px;
+}
+
+.panel h2{
+margin-bottom:7px;
+}
+
+.panel-description{
+color:var(--muted);
+margin-bottom:25px;
+}
+
+.dashboard-panel{
+display:none;
+}
+
+.dashboard-panel.active{
+display:block;
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:17px;
+}
+
+.full{
+grid-column:1/-1;
+}
+
+.checkbox-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.check{
+border:1px solid var(--border);
+border-radius:10px;
+padding:11px;
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.save-bar{
+position:sticky;
+bottom:15px;
+background:rgba(255,255,255,.96);
+border:1px solid var(--border);
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+padding:12px;
+border-radius:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+}
+
+.status{
+color:var(--success);
+font-weight:700;
+font-size:14px;
+}
+
+/* SHOPS */
+
+.shop-list{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:18px;
+}
+
+.shop-card{
+background:white;
+border:1px solid var(--border);
+border-radius:18px;
+padding:20px;
+}
+
+.shop-icon{
+width:55px;
+height:55px;
+background:#eeebff;
+border-radius:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+margin-bottom:15px;
+}
+
+.shop-card p{
+color:var(--muted);
+margin:7px 0;
+}
+
+/* LOADING */
+
+.loading{
+position:fixed;
+inset:0;
+background:rgba(255,255,255,.8);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+.loading.active{
+display:flex;
+}
+
+.loader{
+background:white;
+padding:25px 30px;
+border-radius:15px;
+box-shadow:0 10px 40px rgba(0,0,0,.15);
+font-weight:700;
+}
+
+/* TOAST */
+
+.toast{
+position:fixed;
+left:50%;
+bottom:25px;
+transform:translate(-50%,120px);
+background:#111827;
+color:white;
+padding:14px 20px;
+border-radius:12px;
+z-index:9999;
+transition:.3s;
+max-width:90%;
+text-align:center;
+}
+
+.toast.show{
+transform:translate(-50%,0);
+}
+
+.toast.error{
+background:#dc2626;
+}
+
+.toast.success{
+background:#059669;
+}
+
+footer{
+text-align:center;
+padding:35px;
+color:var(--muted);
+border-top:1px solid var(--border);
+}
+
+@media(max-width:800px){
+
+.features,
+.shop-list{
+grid-template-columns:1fr;
+}
+
+.dashboard-grid{
+grid-template-columns:1fr;
+}
+
+.sidebar{
+position:static;
+display:flex;
+overflow-x:auto;
+}
+
+.side-btn{
+min-width:max-content;
+}
+
+.form-grid{
+grid-template-columns:1fr;
+}
+
+.full{
+grid-column:auto;
+}
+
+.checkbox-grid{
+grid-template-columns:1fr;
+}
+
+.dashboard-head{
+align-items:flex-start;
+flex-direction:column;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="nav">
+
+<div class="logo">
+NexaShop
+</div>
+
+<div class="nav-buttons">
+
+<button
+class="btn btn-light"
+onclick="showHome()">
+Découvrir
+</button>
+
+<button
+class="btn btn-primary"
+id="navAuthButton"
+onclick="openAuth()">
+Connexion
+</button>
+
+</div>
+
+</div>
+
+</header>
+
+
+<!-- ACCUEIL -->
+
+<main id="home">
+
+<section class="hero">
+
+<div class="badge">
+✨ L'intelligence artificielle pour les commerces
+</div>
+
+<h1>
+Votre commerce.
+<span class="gradient">
+Votre assistant IA.
+</span>
+</h1>
+
+<p>
+Créez votre assistant intelligent en quelques minutes.
+Vos clients peuvent poser leurs questions, découvrir vos
+services et produits et obtenir des réponses 24h/24.
+</p>
+
+<div class="hero-buttons">
+
+<button
+class="btn btn-primary"
+onclick="openAuth('signup')">
+🚀 Créer mon commerce gratuitement
+</button>
+
+<button
+class="btn btn-light"
+onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+📍 Découvrir NexaShop
+</button>
+
+</div>
+
+</section>
+
+
+<section
+class="container"
+id="features">
+
+<div class="section-title">
+
+<h2>
+Un assistant pour chaque commerce
+</h2>
+
+<p>
+NexaShop s'adapte à votre activité.
+</p>
+
+</div>
+
+
+<div class="features">
+
+<div class="feature">
+
+<div class="feature-icon">
+🤖
+</div>
+
+<h3>
+Assistant IA
+</h3>
+
+<p>
+Répond aux questions des clients grâce
+aux informations du commerce.
+</p>
+
+</div>
+
+
+<div class="feature">
+
+<div class="feature-icon">
+🌍
+</div>
+
+<h3>
+Multilingue
+</h3>
+
+<p>
+Vos clients pourront communiquer
+avec votre assistant dans leur langue.
+</p>
+
+</div>
+
+
+<div class="feature">
+
+<div class="feature-icon">
+📸
+</div>
+
+<h3>
+Photos
+</h3>
+
+<p>
+Les clients pourront envoyer des photos
+pour expliquer ce qu'ils recherchent.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="container">
+
+<div class="section-title">
+
+<h2>
+📍 Commerces NexaShop
+</h2>
+
+<p>
+Découvrez les commerces inscrits sur NexaShop.
+</p>
+
+</div>
+
+<div
+id="publicShops"
+class="shop-list">
+
+<p>
+Chargement des commerces...
+</p>
+
+</div>
+
+</section>
+
+</main>
+
+
+<!-- AUTH -->
+
+<section
+id="authPage"
+class="auth-page">
+
+<div class="auth-card">
+
+
+<div id="loginForm">
+
+<h1>
+👋 Connexion
+</h1>
+
+<p>
+Connectez-vous à votre espace NexaShop.
+</p>
+
+<div class="form-group">
+
+<label>Email</label>
+
+<input
+id="loginEmail"
+type="email"
+placeholder="vous@email.com">
+
+</div>
+
+<div class="form-group">
+
+<label>Mot de passe</label>
+
+<input
+id="loginPassword"
+type="password"
+placeholder="Votre mot de passe">
+
+</div>
+
+<button
+class="btn btn-primary"
+style="width:100%"
+onclick="login()">
+
+Se connecter
+
+</button>
+
+<div class="auth-switch">
+
+Pas encore de compte ?
+
+<button onclick="toggleAuth('signup')">
+Créer un compte
+</button>
+
+</div>
+
+</div>
+
+
+<div
+id="signupForm"
+class="hidden">
+
+<h1>
+🚀 Créer un compte
+</h1>
+
+<p>
+Créez votre compte NexaShop gratuitement.
+</p>
+
+<div class="form-group">
+
+<label>Email</label>
+
+<input
+id="signupEmail"
+type="email"
+placeholder="vous@email.com">
+
+</div>
+
+<div class="form-group">
+
+<label>Mot de passe</label>
+
+<input
+id="signupPassword"
+type="password"
+placeholder="Minimum 6 caractères">
+
+</div>
+
+<button
+class="btn btn-primary"
+style="width:100%"
+onclick="signup()">
+
+Créer mon compte
+
+</button>
+
+<div class="auth-switch">
+
+Déjà un compte ?
+
+<button onclick="toggleAuth('login')">
+Se connecter
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- DASHBOARD -->
+
+<section
+id="dashboard"
+class="dashboard">
+
+<div class="dashboard-head">
+
+<div>
+
+<h1>
+🏪 Mon commerce
+</h1>
+
+<p>
+Configurez les informations utilisées
+par votre assistant IA.
+</p>
+
+</div>
+
+<button
+class="btn btn-light"
+onclick="logout()">
+
+Déconnexion
+
+</button>
+
+</div>
+
+
+<div class="dashboard-grid">
+
+<aside class="sidebar">
+
+<button
+class="side-btn active"
+onclick="showPanel('general',this)">
+🏪 Général
+</button>
+
+<button
+class="side-btn"
+onclick="showPanel('services',this)">
+🛍️ Services
+</button>
+
+<button
+class="side-btn"
+onclick="showPanel('hours',this)">
+🕐 Horaires
+</button>
+
+<button
+class="side-btn"
+onclick="showPanel('products',this)">
+📦 Produits
+</button>
+
+<button
+class="side-btn"
+onclick="showPanel('photos',this)">
+📸 Photos
+</button>
+
+<button
+class="side-btn"
+onclick="showPanel('faq',this)">
+❓ FAQ
+</button>
+
+<button
+class="side-btn"
+onclick="showPanel('assistant',this)">
+🤖 Assistant
+</button>
+
+</aside>
+
+
+<div>
+
+
+<!-- GENERAL -->
+
+<div
+id="panel-general"
+class="panel dashboard-panel active">
+
+<h2>
+🏪 Informations générales
+</h2>
+
+<p class="panel-description">
+Ces informations seront utilisées par votre assistant NexaShop.
+</p>
+
+<div class="form-grid">
+
+
+<div class="form-group">
+
+<label>
+Nom du commerce *
+</label>
+
+<input
+id="shopName"
+placeholder="Ex : Barber Madrid">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Type de commerce *
+</label>
+
+<select id="shopType">
+
+<option value="barber">
+💈 Coiffeur / Barbier
+</option>
+
+<option value="restaurant">
+🍕 Restaurant
+</option>
+
+<option value="clothing">
+👕 Vêtements
+</option>
+
+<option value="garage">
+🚗 Garage
+</option>
+
+<option value="hotel">
+🏨 Hôtel
+</option>
+
+<option value="beauty">
+💅 Beauté
+</option>
+
+<option value="other">
+🏪 Autre
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group full">
+
+<label>
+Description
+</label>
+
+<textarea
+id="description"
+placeholder="Présentez votre commerce..."></textarea>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+📍 Adresse
+</label>
+
+<input
+id="address"
+placeholder="Adresse complète">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+🏙️ Ville
+</label>
+
+<input
+id="city"
+placeholder="Madrid">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+🌍 Pays
+</label>
+
+<input
+id="country"
+value="Espagne">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+📞 Téléphone
+</label>
+
+<input
+id="phone"
+placeholder="+34 ...">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+📧 Email
+</label>
+
+<input
+id="businessEmail"
+placeholder="contact@...">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+🌐 Site web
+</label>
+
+<input
+id="website"
+placeholder="https://...">
+
+</div>
+
+
+<div class="form-group full">
+
+<label>
+🌍 Langues disponibles
+</label>
+
+<div class="checkbox-grid">
+
+<label class="check">
+<input
+type="checkbox"
+name="language"
+value="Français">
+🇫🇷 Français
+</label>
+
+<label class="check">
+<input
+type="checkbox"
+name="language"
+value="Espagnol">
+🇪🇸 Espagnol
+</label>
+
+<label class="check">
+<input
+type="checkbox"
+name="language"
+value="Anglais">
+🇬🇧 Anglais
+</label>
+
+<label class="check">
+<input
+type="checkbox"
+name="language"
+value="Arabe">
+🇸🇦 Arabe
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- SERVICES -->
+
+<div
+id="panel-services"
+class="panel dashboard-panel">
+
+<h2>
+🛍️ Services
+</h2>
+
+<p class="panel-description">
+Ajoutez les services proposés par votre commerce.
+</p>
+
+<div id="servicesList">
+
+<div class="form-group">
+
+<label>
+Nom du service
+</label>
+
+<input
+class="service-name"
+placeholder="Ex : Coupe">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Prix
+</label>
+
+<input
+class="service-price"
+placeholder="Ex : 15 €">
+
+</div>
+
+</div>
+
+<button
+class="btn btn-light"
+onclick="addService()">
+
+➕ Ajouter un service
+
+</button>
+
+</div>
+
+
+<!-- HORAIRES -->
+
+<div
+id="panel-hours"
+class="panel dashboard-panel">
+
+<h2>
+🕐 Horaires
+</h2>
+
+<p class="panel-description">
+Indiquez les horaires de votre commerce.
+</p>
+
+<div class="form-grid">
+
+<div class="form-group">
+
+<label>
+Lundi
+</label>
+
+<input
+id="monday"
+placeholder="10:00 - 20:00">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Mardi
+</label>
+
+<input
+id="tuesday"
+placeholder="10:00 - 20:00">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Mercredi
+</label>
+
+<input
+id="wednesday"
+placeholder="10:00 - 20:00">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Jeudi
+</label>
+
+<input
+id="thursday"
+placeholder="10:00 - 20:00">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Vendredi
+</label>
+
+<input
+id="friday"
+placeholder="10:00 - 20:00">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Samedi
+</label>
+
+<input
+id="saturday"
+placeholder="10:00 - 20:00">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Dimanche
+</label>
+
+<input
+id="sunday"
+placeholder="Fermé">
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- PRODUITS -->
+
+<div
+id="panel-products"
+class="panel dashboard-panel">
+
+<h2>
+📦 Produits
+</h2>
+
+<p class="panel-description">
+Ajoutez les produits disponibles dans votre commerce.
+</p>
+
+<div id="productsList">
+
+<div class="form-group">
+
+<label>
+Nom du produit
+</label>
+
+<input
+class="product-name"
+placeholder="Ex : T-shirt noir">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Prix
+</label>
+
+<input
+class="product-price"
+placeholder="Ex : 20 €">
+
+</div>
+
+</div>
+
+<button
+class="btn btn-light"
+onclick="addProduct()">
+
+➕ Ajouter un produit
+
+</button>
+
+</div>
+
+
+<!-- PHOTOS -->
+
+<div
+id="panel-photos"
+class="panel dashboard-panel">
+
+<h2>
+📸 Photos
+</h2>
+
+<p class="panel-description">
+Ajoutez l'URL du logo ou d'une photo de votre commerce.
+</p>
+
+<div class="form-group">
+
+<label>
+URL du logo
+</label>
+
+<input
+id="logoUrl"
+placeholder="https://...">
+
+</div>
+
+<div class="form-group">
+
+<label>
+URL des photos
+</label>
+
+<textarea
+id="photoUrls"
+placeholder="Une URL par ligne"></textarea>
+
+</div>
+
+</div>
+
+
+<!-- FAQ -->
+
+<div
+id="panel-faq"
+class="panel dashboard-panel">
+
+<h2>
+❓ Questions fréquentes
+</h2>
+
+<p class="panel-description">
+Ajoutez des questions et réponses que votre assistant pourra utiliser.
+</p>
+
+<div id="faqList">
+
+<div class="form-group">
+
+<label>
+Question
+</label>
+
+<input
+class="faq-question"
+placeholder="Ex : Quels sont vos horaires ?">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Réponse
+</label>
+
+<textarea
+class="faq-answer"
+placeholder="Ex : Nous sommes ouverts de 10h à 20h."></textarea>
+
+</div>
+
+</div>
+
+<button
+class="btn btn-light"
+onclick="addFaq()">
+
+➕ Ajouter une FAQ
+
+</button>
+
+</div>
+
+
+<!-- ASSISTANT -->
+
+<div
+id="panel-assistant"
+class="panel dashboard-panel">
+
+<h2>
+🤖 Mon assistant NexaShop
+</h2>
+
+<p class="panel-description">
+Voici un aperçu de la configuration de votre assistant.
+</p>
+
+<div
+style="
+background:#f6f7fb;
+padding:20px;
+border-radius:15px;
+line-height:1.7;
+">
+
+<strong>
+🤖 Votre assistant
+</strong>
+
+<br><br>
+
+Il pourra utiliser les informations de votre commerce
+pour répondre aux questions des clients.
+
+<br><br>
+
+<strong>
+Nom :
+</strong>
+
+<span id="previewName">
+Votre commerce
+</span>
+
+<br>
+
+<strong>
+Type :
+</strong>
+
+<span id="previewType">
+Non défini
+</span>
+
+<br>
+
+<strong>
+Ville :
+</strong>
+
+<span id="previewCity">
+Non définie
+</span>
+
+</div>
+
+</div>
+
+
+<!-- BARRE SAUVEGARDE -->
+
+<div class="save-bar">
+
+<div
+id="saveStatus"
+class="status">
+
+● Prêt
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="saveBusiness()">
+
+💾 Sauvegarder mon commerce
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<footer>
+
+© 2026 NexaShop — AI for local businesses 🌍
+
+</footer>
+
+
+<!-- LOADING -->
+
+<div
+id="loading"
+class="loading">
+
+<div class="loader">
+⏳ Chargement...
+</div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+id="toast"
+class="toast">
+
+Message
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+"https://ldrftvkbqvvnffwdewqr.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_6EFLCuFmZ2SlIJUwYttdBQ_xgSBy1Rl";
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let currentUser = null;
+let currentBusiness = null;
+
+
+/* =====================================================
+   UTILITAIRES
+===================================================== */
+
+function showLoading(show){
+
+const el =
+document.getElementById("loading");
+
+if(show){
+el.classList.add("active");
+}else{
+el.classList.remove("active");
+}
+
+}
+
+
+function toast(message,type=""){
+
+const el =
+document.getElementById("toast");
+
+el.textContent = message;
+
+el.className =
+"toast show " + type;
+
+setTimeout(()=>{
+el.className="toast";
+},3500);
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function showHome(){
+
+document.getElementById("home").style.display="block";
+
+document.getElementById("authPage")
+.classList.remove("active");
+
+document.getElementById("dashboard")
+.classList.remove("active");
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+function openAuth(mode="login"){
+
+document.getElementById("home").style.display="none";
+
+document.getElementById("dashboard")
+.classList.remove("active");
+
+document.getElementById("authPage")
+.classList.add("active");
+
+toggleAuth(mode);
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+function toggleAuth(mode){
+
+const login =
+document.getElementById("loginForm");
+
+const signup =
+document.getElementById("signupForm");
+
+if(mode==="signup"){
+
+login.classList.add("hidden");
+signup.classList.remove("hidden");
+
+}else{
+
+signup.classList.add("hidden");
+login.classList.remove("hidden");
+
+}
+
+}
+
+
+/* =====================================================
+   INSCRIPTION
+===================================================== */
+
+async function signup(){
+
+const email =
+document.getElementById("signupEmail")
+.value.trim();
+
+const password =
+document.getElementById("signupPassword")
+.value;
+
+if(!email){
+
+toast("❌ Entre ton adresse email","error");
+return;
+
+}
+
+if(!password || password.length < 6){
+
+toast("❌ Le mot de passe doit contenir au moins 6 caractères","error");
+return;
+
+}
+
+showLoading(true);
+
+try{
+
+const {
+data,
+error
+} =
+await supabaseClient.auth.signUp({
+
+email:email,
+
+password:password
+
+});
+
+
+if(error){
+
+console.error(error);
+
+toast(
+"❌ "+error.message,
+"error"
+);
+
+return;
+
+}
+
+
+/* Supabase peut demander une confirmation email */
+
+if(data.user && !data.session){
+
+toast(
+"📧 Compte créé ! Vérifie ton email pour confirmer ton compte.",
+"success"
+);
+
+}else{
+
+toast(
+"✅ Compte créé avec succès !",
+"success"
+);
+
+}
+
+}catch(error){
+
+console.error(error);
+
+toast(
+"❌ Une erreur est survenue : "+error.message,
+"error"
+);
+
+}finally{
+
+showLoading(false);
+
+}
+
+}
+
+
+/* =====================================================
+   CONNEXION
+===================================================== */
+
+async function login(){
+
+const email =
+document.getElementById("loginEmail")
+.value.trim();
+
+const password =
+document.getElementById("loginPassword")
+.value;
+
+if(!email || !password){
+
+toast(
+"❌ Remplis ton email et ton mot de passe.",
+"error"
+);
+
+return;
+
+}
+
+showLoading(true);
+
+try{
+
+const {
+data,
+error
+} =
+await supabaseClient.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
+
+if(error){
+
+console.error(error);
+
+toast(
+"❌ "+error.message,
+"error"
+);
+
+return;
+
+}
+
+currentUser =
+data.user;
+
+toast(
+"✅ Connexion réussie !",
+"success"
+);
+
+await openDashboard();
+
+}catch(error){
+
+console.error(error);
+
+toast(
+"❌ "+error.message,
+"error"
+);
+
+}finally{
+
+showLoading(false);
+
+}
+
+}
+
+
+/* =====================================================
+   DECONNEXION
+===================================================== */
+
+async function logout(){
+
+showLoading(true);
+
+try{
+
+await supabaseClient.auth.signOut();
+
+currentUser=null;
+currentBusiness=null;
+
+document.getElementById("dashboard")
+.classList.remove("active");
+
+document.getElementById("authPage")
+.classList.remove("active");
+
+document.getElementById("home").style.display="block";
+
+document.getElementById("navAuthButton")
+.textContent="Connexion";
+
+toast(
+"👋 Déconnexion réussie.",
+"success"
+);
+
+}catch(error){
+
+toast(
+"❌ "+error.message,
+"error"
+);
+
+}finally{
+
+showLoading(false);
+
+}
+
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+async function openDashboard(){
+
+document.getElementById("home").style.display="none";
+
+document.getElementById("authPage")
+.classList.remove("active");
+
+document.getElementById("dashboard")
+.classList.add("active");
+
+document.getElementById("navAuthButton")
+.textContent="Mon commerce";
+
+await loadBusiness();
+
+}
+
+
+/* =====================================================
+   PANELS
+===================================================== */
+
+function showPanel(name,button){
+
+document
+.querySelectorAll(".dashboard-panel")
+.forEach(panel=>{
+panel.classList.remove("active");
+});
+
+const panel =
+document.getElementById("panel-"+name);
+
+if(panel){
+panel.classList.add("active");
+}
+
+document
+.querySelectorAll(".side-btn")
+.forEach(btn=>{
+btn.classList.remove("active");
+});
+
+if(button){
+button.classList.add("active");
+}
+
+}
+
+/* =====================================================
+   CHARGER LE COMMERCE
+===================================================== */
+
+async function loadBusiness(){
+
+if(!currentUser){
+
+return;
+
+}
+
+try{
+
+const {
+data,
+error
+} =
+await supabaseClient
+.from("businesses")
+.select("*")
+.eq("owner_id",currentUser.id)
+.maybeSingle();
+
+if(error){
+
+console.error(error);
+
+toast(
+"❌ Impossible de récupérer le commerce : "+error.message,
+"error"
+);
+
+return;
+
+}
+
+if(data){
+
+currentBusiness=data;
+
+fillBusinessForm(data);
+
+toast(
+"✅ Commerce chargé.",
+"success"
+);
+
+}else{
+
+currentBusiness=null;
+
+}
+
+}catch(error){
+
+console.error(error);
+
+toast(
+"❌ "+error.message,
+"error"
+);
+
+}
+
+}
+
+
+/* =====================================================
+   REMPLIR LE FORMULAIRE
+===================================================== */
+
+function fillBusinessForm(data){
+
+document.getElementById("shopName").value =
+data.name || "";
+
+document.getElementById("shopType").value =
+data.type || "other";
+
+document.getElementById("description").value =
+data.description || "";
+
+document.getElementById("address").value =
+data.address || "";
+
+document.getElementById("city").value =
+data.city || "";
+
+document.getElementById("country").value =
+data.country || "Espagne";
+
+document.getElementById("phone").value =
+data.phone || "";
+
+document.getElementById("businessEmail").value =
+data.email || "";
+
+document.getElementById("website").value =
+data.website || "";
+
+document.getElementById("logoUrl").value =
+data.logo_url || "";
+
+
+/* langues */
+
+document
+.querySelectorAll('input[name="language"]')
+.forEach(box=>{
+box.checked=false;
+});
+
+if(Array.isArray(data.language)){
+
+document
+.querySelectorAll('input[name="language"]')
+.forEach(box=>{
+
+if(data.language.includes(box.value)){
+box.checked=true;
+}
+
+});
+
+}
+
+
+/* aperçu */
+
+updatePreview();
+
+}
+
+
+/* =====================================================
+   LANGUES
+===================================================== */
+
+function getLanguages(){
+
+return Array.from(
+document.querySelectorAll(
+'input[name="language"]:checked'
+)
+).map(input=>input.value);
+
+}
+
+
+/* =====================================================
+   SAUVEGARDER LE COMMERCE
+===================================================== */
+
+async function saveBusiness(){
+
+if(!currentUser){
+
+toast(
+"❌ Tu dois être connecté.",
+"error"
+);
+
+return;
+
+}
+
+const name =
+document.getElementById("shopName")
+.value.trim();
+
+if(!name){
+
+toast(
+"❌ Le nom du commerce est obligatoire.",
+"error"
+);
+
+return;
+
+}
+
+const businessData={
+
+owner_id:currentUser.id,
+
+name:name,
+
+type:
+document.getElementById("shopType").value,
+
+description:
+document.getElementById("description").value.trim(),
+
+address:
+document.getElementById("address").value.trim(),
+
+city:
+document.getElementById("city").value.trim(),
+
+country:
+document.getElementById("country").value.trim(),
+
+phone:
+document.getElementById("phone").value.trim(),
+
+email:
+document.getElementById("businessEmail").value.trim(),
+
+website:
+document.getElementById("website").value.trim(),
+
+language:getLanguages(),
+
+logo_url:
+document.getElementById("logoUrl").value.trim(),
+
+updated_at:new Date().toISOString()
+
+};
+
+showLoading(true);
+
+try{
+
+let result;
+
+
+/* Si commerce existant */
+
+if(currentBusiness && currentBusiness.id){
+
+result =
+await supabaseClient
+.from("businesses")
+.update(businessData)
+.eq("id",currentBusiness.id)
+.eq("owner_id",currentUser.id)
+.select()
+.single();
+
+}else{
+
+result =
+await supabaseClient
+.from("businesses")
+.insert(businessData)
+.select()
+.single();
+
+}
+
+
+if(result.error){
+
+console.error(result.error);
+
+toast(
+"❌ Erreur Supabase : "+result.error.message,
+"error"
+);
+
+return;
+
+}
+
+
+currentBusiness =
+result.data;
+
+updatePreview();
+
+document.getElementById("saveStatus")
+.textContent="● Sauvegardé";
+
+toast(
+"✅ Commerce sauvegardé !",
+"success"
+);
+
+}catch(error){
+
+console.error(error);
+
+toast(
+"❌ "+error.message,
+"error"
+);
+
+}finally{
+
+showLoading(false);
+
+}
+
+}
+
+
+/* =====================================================
+   APERCU
+===================================================== */
+
+function updatePreview(){
+
+const name =
+document.getElementById("shopName").value;
+
+const type =
+document.getElementById("shopType");
+
+const city =
+document.getElementById("city").value;
+
+document.getElementById("previewName")
+.textContent =
+name || "Votre commerce";
+
+document.getElementById("previewType")
+.textContent =
+type.options[type.selectedIndex]?.text || "Non défini";
+
+document.getElementById("previewCity")
+.textContent =
+city || "Non définie";
+
+}
+
+
+/* =====================================================
+   SERVICES
+===================================================== */
+
+function addService(){
+
+const container =
+document.getElementById("servicesList");
+
+const wrapper =
+document.createElement("div");
+
+wrapper.innerHTML=`
+
+<hr style="margin:20px 0;border:0;border-top:1px solid #eee">
+
+<div class="form-group">
+
+<label>
+Nom du service
+</label>
+
+<input
+class="service-name"
+placeholder="Ex : Coupe + barbe">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Prix
+</label>
+
+<input
+class="service-price"
+placeholder="Ex : 22 €">
+
+</div>
+
+`;
+
+container.appendChild(wrapper);
+
+}
+
+
+/* =====================================================
+   PRODUITS
+===================================================== */
+
+function addProduct(){
+
+const container =
+document.getElementById("productsList");
+
+const wrapper =
+document.createElement("div");
+
+wrapper.innerHTML=`
+
+<hr style="margin:20px 0;border:0;border-top:1px solid #eee">
+
+<div class="form-group">
+
+<label>
+Nom du produit
+</label>
+
+<input
+class="product-name"
+placeholder="Ex : T-shirt">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Prix
+</label>
+
+<input
+class="product-price"
+placeholder="Ex : 25 €">
+
+</div>
+
+`;
+
+container.appendChild(wrapper);
+
+}
+
+
+/* =====================================================
+   FAQ
+===================================================== */
+
+function addFaq(){
+
+const container =
+document.getElementById("faqList");
+
+const wrapper =
+document.createElement("div");
+
+wrapper.innerHTML=`
+
+<hr style="margin:20px 0;border:0;border-top:1px solid #eee">
+
+<div class="form-group">
+
+<label>
+Question
+</label>
+
+<input
+class="faq-question"
+placeholder="Ex : Faites-vous les rendez-vous ?">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Réponse
+</label>
+
+<textarea
+class="faq-answer"
+placeholder="Votre réponse..."></textarea>
+
+</div>
+
+`;
+
+container.appendChild(wrapper);
+
+}
+
+
+/* =====================================================
+   LISTE PUBLIQUE
+===================================================== */
+
+async function loadPublicBusinesses(){
+
+const container =
+document.getElementById("publicShops");
+
+try{
+
+const {
+data,
+error
+} =
+await supabaseClient
+.from("businesses")
+.select("id,name,type,description,address,city,country,logo_url")
+.order("created_at",{ascending:false})
+.limit(30);
+
+if(error){
+
+console.error(error);
+
+container.innerHTML=`
+<p>
+❌ Impossible de charger les commerces.
+</p>
+`;
+
+return;
+
+}
+
+if(!data || data.length===0){
+
+container.innerHTML=`
+<p>
+Aucun commerce inscrit pour le moment.
+</p>
+`;
+
+return;
+
+}
+
+container.innerHTML="";
+
+data.forEach(shop=>{
+
+const card =
+document.createElement("div");
+
+card.className="shop-card";
+
+let icon="🏪";
+
+if(shop.type==="barber") icon="✂️";
+if(shop.type==="restaurant") icon="🍕";
+if(shop.type==="clothing") icon="👕";
+if(shop.type==="garage") icon="🚗";
+if(shop.type==="hotel") icon="🏨";
+if(shop.type==="beauty") icon="💅";
+
+card.innerHTML=`
+
+<div class="shop-icon">
+${shop.logo_url
+? `<img src="${escapeHtml(shop.logo_url)}"
+style="width:100%;height:100%;object-fit:cover;border-radius:14px">`
+: icon}
+</div>
+
+<h3>
+${escapeHtml(shop.name || "Commerce")}
+</h3>
+
+<p>
+${escapeHtml(shop.description || "Commerce NexaShop")}
+</p>
+
+<p>
+📍 ${escapeHtml(
+[shop.address,shop.city,shop.country]
+.filter(Boolean)
+.join(", ")
+)}
+</p>
+
+<button
+class="btn btn-primary"
+style="margin-top:10px"
+onclick="openShopAssistant('${escapeJs(shop.name || "Commerce")}')">
+
+🤖 Parler à l'assistant
+
+</button>
+
+`;
+
+container.appendChild(card);
+
+});
+
+}
+
+
+/* =====================================================
+   SECURITE AFFICHAGE
+===================================================== */
+
+function escapeHtml(value){
+
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+function escapeJs(value){
+
+return String(value)
+.replace(/\\/g,"\\\\")
+.replace(/'/g,"\\'")
+.replace(/"/g,'\\"');
+
+}
+
+
+/* =====================================================
+   ASSISTANT DEMO
+===================================================== */
+
+function openShopAssistant(name){
+
+toast(
+"🤖 Assistant de "+name+" — bientôt disponible !",
+"success"
+);
+
+}
+
+
+/* =====================================================
+   ECOUTER LES CHANGEMENTS
+===================================================== */
+
+document
+.getElementById("shopName")
+.addEventListener("input",updatePreview);
+
+document
+.getElementById("shopType")
+.addEventListener("change",updatePreview);
+
+document
+.getElementById("city")
+.addEventListener("input",updatePreview);
+
+
+/* =====================================================
+   INITIALISATION
+===================================================== */
+
+async function init(){
+
+showLoading(true);
+
+try{
+
+/* récupérer la session actuelle */
+
+const {
+data
+} =
+await supabaseClient.auth.getSession();
+
+if(data && data.session){
+
+currentUser =
+data.session.user;
+
+await openDashboard();
+
+}else{
+
+showHome();
+
+}
+
+
+/* charger les commerces publics */
+
+await loadPublicBusinesses();
+
+
+/* écouter les changements d'auth */
+
+supabaseClient.auth.onAuthStateChange(
+async(event,session)=>{
+
+if(session){
+
+currentUser=session.user;
+
+}else{
+
+currentUser=null;
+
+}
+
+});
+
+}catch(error){
+
+console.error(error);
+
+toast(
+"❌ Erreur d'initialisation : "+error.message,
+"error"
+);
+
+}finally{
+
+showLoading(false);
+
+}
+
+}
+
+
+/* =====================================================
+   LANCEMENT
+===================================================== */
+
+init();
+
+</script>
+
+</body>
+</html>
