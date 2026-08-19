@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NexaShop — L'IA pour les commerces</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --primary:#635bff;
+    --primary2:#8b5cf6;
+    --dark:#111827;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --border:#e5e7eb;
+    --success:#10b981;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+}
+
+body{
+    font-family:Inter,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.5;
+}
+
+button,
+input,
+textarea,
+select{
+    font-family:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(255,255,255,.95);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid var(--border);
+}
+
+.nav{
+    max-width:1200px;
+    margin:auto;
+    padding:14px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:900;
+    color:var(--primary);
+    letter-spacing:-1px;
+}
+
+.nav-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.btn{
+    border:0;
+    padding:11px 16px;
+    border-radius:11px;
+    font-weight:750;
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+}
+
+.btn-primary{
+    background:var(--primary);
+    color:white;
+}
+
+.btn-dark{
+    background:var(--dark);
+    color:white;
+}
+
+.btn-light{
+    background:white;
+    color:var(--dark);
+    border:1px solid var(--border);
+}
+
+.btn-danger{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+
+.btn-success{
+    background:#d1fae5;
+    color:#047857;
+}
+
+.hero{
+    max-width:1050px;
+    margin:auto;
+    text-align:center;
+    padding:80px 20px 65px;
+}
+
+.badge{
+    display:inline-block;
+    background:#eeebff;
+    color:#564de0;
+    padding:8px 15px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.hero h1{
+    font-size:clamp(43px,8vw,78px);
+    line-height:.98;
+    letter-spacing:-4px;
+}
+
+.gradient{
+    background:linear-gradient(90deg,var(--primary),var(--primary2));
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.hero p{
+    max-width:720px;
+    margin:25px auto;
+    color:var(--muted);
+    font-size:18px;
+    line-height:1.65;
+}
+
+.hero-buttons{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:30px 20px 70px;
+}
+
+.section-title{
+    text-align:center;
+    margin:20px 0 30px;
+}
+
+.section-title h2{
+    font-size:35px;
+    margin-bottom:7px;
+}
+
+.section-title p{
+    color:var(--muted);
+}
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.feature{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    border:1px solid var(--border);
+}
+
+.feature-icon{
+    font-size:35px;
+    margin-bottom:12px;
+}
+
+.feature p{
+    color:var(--muted);
+    margin-top:8px;
+}
+
+.shops{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.shop{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+    transition:.2s;
+}
+
+.shop:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 35px rgba(0,0,0,.07);
+}
+
+.shop-icon{
+    width:55px;
+    height:55px;
+    border-radius:15px;
+    background:#eeebff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:27px;
+    margin-bottom:13px;
+}
+
+.shop p{
+    color:var(--muted);
+    margin:5px 0;
+}
+
+.shop button{
+    margin-top:12px;
+}
+
+.search-box{
+    max-width:650px;
+    margin:0 auto 25px;
+}
+
+.search-box input{
+    width:100%;
+    padding:15px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:white;
+    outline:none;
+    font-size:16px;
+}
+
+.chat{
+    max-width:700px;
+    margin:auto;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 15px 45px rgba(0,0,0,.06);
+}
+
+.chat-head{
+    background:var(--dark);
+    color:white;
+    padding:18px;
+    font-weight:800;
+}
+
+.chat-messages{
+    min-height:280px;
+    max-height:420px;
+    overflow:auto;
+    padding:20px;
+}
+
+.message{
+    max-width:84%;
+    padding:12px 15px;
+    border-radius:15px;
+    margin-bottom:12px;
+    line-height:1.5;
+    white-space:pre-line;
+}
+
+.message.user{
+    margin-left:auto;
+    background:#ebe9ff;
+}
+
+.message.ai{
+    background:#f1f3f5;
+}
+
+.chat-input{
+    display:flex;
+    gap:8px;
+    padding:12px;
+    border-top:1px solid var(--border);
+}
+
+.chat-input input{
+    flex:1;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:13px;
+    outline:none;
+}
+
+.chat-input button{
+    border:0;
+    background:var(--primary);
+    color:white;
+    border-radius:10px;
+    padding:0 18px;
+}
+
+.dashboard{
+    display:none;
+    max-width:1200px;
+    margin:auto;
+    padding:30px 20px 80px;
+}
+
+.dashboard.active{
+    display:block;
+}
+
+.dashboard-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.dashboard-head h1{
+    font-size:32px;
+}
+
+.dashboard-head p{
+    color:var(--muted);
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:225px 1fr;
+    gap:20px;
+}
+
+.sidebar{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:10px;
+    height:max-content;
+    position:sticky;
+    top:80px;
+}
+
+.side-btn{
+    width:100%;
+    text-align:left;
+    background:white;
+    border:0;
+    padding:13px;
+    border-radius:10px;
+    font-weight:750;
+    color:#4b5563;
+    margin-bottom:3px;
+}
+
+.side-btn.active,
+.side-btn:hover{
+    background:#efedff;
+    color:var(--primary);
+}
+
+.panel{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:25px;
+    margin-bottom:20px;
+}
+
+.panel.hidden{
+    display:none;
+}
+
+.panel h2{
+    margin-bottom:5px;
+}
+
+.panel-description{
+    color:var(--muted);
+    margin-bottom:22px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:17px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+.form-group label{
+    font-size:14px;
+    font-weight:800;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+    border:1px solid #dfe3ea;
+    border-radius:10px;
+    padding:12px 13px;
+    font-size:15px;
+    outline:none;
+    background:white;
+}
+
+.form-group textarea{
+    min-height:110px;
+    resize:vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(99,91,255,.1);
+}
+
+.language-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.language{
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:11px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.dynamic-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.dynamic-item{
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:15px;
+    background:#fafafa;
+}
+
+.dynamic-grid{
+    display:grid;
+    grid-template-columns:1fr 130px 130px auto;
+    gap:8px;
+    align-items:center;
+}
+
+.dynamic-grid.two{
+    grid-template-columns:1fr 1fr auto;
+}
+
+.dynamic-item input,
+.dynamic-item textarea{
+    border:1px solid #dfe3ea;
+    border-radius:9px;
+    padding:10px;
+    background:white;
+}
+
+.dynamic-item textarea{
+    min-height:70px;
+    resize:vertical;
+}
+
+.small-btn{
+    border:0;
+    border-radius:9px;
+    padding:10px 12px;
+    font-weight:bold;
+}
+
+.add-row{
+    margin-top:14px;
+}
+
+.save-bar{
+    position:sticky;
+    bottom:15px;
+    background:rgba(255,255,255,.96);
+    border:1px solid var(--border);
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
+    padding:12px;
+    border-radius:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    z-index:5;
+}
+
+.status{
+    color:var(--success);
+    font-weight:750;
+}
+
+.empty{
+    text-align:center;
+    color:var(--muted);
+    padding:30px;
+    background:white;
+    border:1px dashed var(--border);
+    border-radius:15px;
+}
+
+.preview{
+    background:#f8f8fb;
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:20px;
+    margin-top:20px;
+}
+
+.toast{
+    position:fixed;
+    bottom:25px;
+    left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:#111827;
+    color:white;
+    padding:13px 20px;
+    border-radius:12px;
+    z-index:999;
+    transition:.3s;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+.toast.show{
+    transform:translateX(-50%) translateY(0);
+}
+
+footer{
+    text-align:center;
+    padding:35px;
+    color:var(--muted);
+    border-top:1px solid var(--border);
+}
+
+.hidden{
+    display:none!important;
+}
+
+@media(max-width:800px){
+
+    .features,
+    .shops{
+        grid-template-columns:1fr;
+    }
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+
+    .sidebar{
+        position:static;
+        display:flex;
+        overflow-x:auto;
+    }
+
+    .side-btn{
+        min-width:max-content;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full{
+        grid-column:auto;
+    }
+
+    .language-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .dynamic-grid,
+    .dynamic-grid.two{
+        grid-template-columns:1fr;
+    }
+
+    .dashboard-head{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .hero h1{
+        letter-spacing:-2px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="nav">
+
+<div class="logo">NexaShop</div>
+
+<div class="nav-buttons">
+<button class="btn btn-light" onclick="showHome()">
+Découvrir
+</button>
+
+<button class="btn btn-primary" onclick="showDashboard()">
+Mon commerce
+</button>
+</div>
+
+</div>
+</header>
+
+
+<!-- ================= ACCUEIL ================= -->
+
+<main id="homePage">
+
+<section class="hero">
+
+<div class="badge">
+✨ L'intelligence artificielle pour les commerces
+</div>
+
+<h1>
+Votre commerce.<br>
+<span class="gradient">Votre assistant IA.</span>
+</h1>
+
+<p>
+Créez votre assistant intelligent en quelques minutes.
+Vos clients peuvent poser leurs questions, découvrir vos
+services et produits et obtenir des réponses 24h/24.
+</p>
+
+<div class="hero-buttons">
+
+<button class="btn btn-primary"
+onclick="showDashboard()">
+🚀 Créer mon assistant gratuitement
+</button>
+
+<button class="btn btn-light"
+onclick="document.getElementById('shopsSection').scrollIntoView({behavior:'smooth'})">
+📍 Découvrir les commerces
+</button>
+
+</div>
+
+</section>
+
+
+<section class="container">
+
+<div class="section-title">
+<h2>Un assistant pour chaque commerce</h2>
+<p>NexaShop s'adapte à votre activité.</p>
+</div>
+
+<div class="features">
+
+<div class="feature">
+<div class="feature-icon">🤖</div>
+<h3>Assistant IA</h3>
+<p>
+Répond aux questions des clients grâce aux informations
+du commerce.
+</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">🌍</div>
+<h3>Multilingue</h3>
+<p>
+Les clients pourront communiquer avec le commerce
+dans leur propre langue.
+</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">📸</div>
+<h3>Comprend les besoins</h3>
+<p>
+Le futur assistant pourra comprendre les demandes
+et aider les clients à choisir un service ou produit.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<section class="container" id="shopsSection">
+
+<div class="section-title">
+<h2>📍 Commerces NexaShop</h2>
+<p>Découvrez les commerces présents sur NexaShop.</p>
+</div>
+
+<div class="search-box">
+<input
+id="shopSearch"
+placeholder="🔎 Rechercher un commerce..."
+oninput="filterShops()">
+</div>
+
+<div class="shops" id="shopsList">
+
+<div class="shop">
+<div class="shop-icon">✂️</div>
+<h3>Barber Madrid</h3>
+<p>💈 Barbier</p>
+<p>📍 Madrid</p>
+<p>⭐ 4.8</p>
+<button class="btn btn-primary"
+onclick="demoShop('Barber Madrid')">
+🤖 Parler à l'assistant
+</button>
+</div>
+
+<div class="shop">
+<div class="shop-icon">🍕</div>
+<h3>Pizza Nova</h3>
+<p>🍕 Restaurant</p>
+<p>📍 Madrid</p>
+<p>⭐ 4.9</p>
+<button class="btn btn-primary"
+onclick="demoShop('Pizza Nova')">
+🤖 Parler à l'assistant
+</button>
+</div>
+
+</div>
+
+</section>
+
+
+<section class="container">
+
+<div class="section-title">
+<h2>🤖 Essayez NexaShop</h2>
+<p>Voici comment un assistant peut répondre à vos clients.</p>
+</div>
+
+<div class="chat">
+
+<div class="chat-head">
+🤖 NexaShop Assistant
+</div>
+
+<div class="chat-messages" id="demoMessages">
+
+<div class="message user">
+Bonjour, combien coûte une coupe ?
+</div>
+
+<div class="message ai">
+Bonjour 👋 Une coupe coûte 15 €.
+Une coupe + barbe coûte 22 €.
+Comment puis-je vous aider ?
+</div>
+
+</div>
+
+<div class="chat-input">
+
+<input
+id="demoInput"
+placeholder="Posez une question..."
+onkeydown="if(event.key==='Enter')sendDemo()">
+
+<button onclick="sendDemo()">➤</button>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<!-- ================= DASHBOARD ================= -->
+
+<section id="dashboardPage" class="dashboard">
+
+<div class="dashboard-head">
+
+<div>
+<h1>🏪 Mon commerce</h1>
+<p>
+Configurez toutes les informations utilisées
+par votre assistant.
+</p>
+</div>
+
+<button class="btn btn-light" onclick="showHome()">
+← Retour
+</button>
+
+</div>
+
+
+<div class="dashboard-grid">
+
+<aside class="sidebar">
+
+<button class="side-btn active"
+onclick="showPanel('general',this)">
+🏪 Général
+</button>
+
+<button class="side-btn"
+onclick="showPanel('services',this)">
+🛍️ Services
+</button>
+
+<button class="side-btn"
+onclick="showPanel('products',this)">
+📦 Produits
+</button>
+
+<button class="side-btn"
+onclick="showPanel('hours',this)">
+🕐 Horaires
+</button>
+
+<button class="side-btn"
+onclick="showPanel('faq',this)">
+❓ FAQ
+</button>
+
+<button class="side-btn"
+onclick="showPanel('assistant',this)">
+🤖 Assistant
+</button>
+
+</aside>
+
+
+<div>
+
+
+<!-- GENERAL -->
+
+<div class="panel dashboard-panel"
+id="panel-general">
+
+<h2>🏪 Informations générales</h2>
+
+<p class="panel-description">
+Plus NexaShop connaît votre commerce, plus votre assistant
+pourra être utile.
+</p>
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Nom du commerce *</label>
+<input id="businessName"
+placeholder="Ex : Barber Madrid">
+</div>
+
+<div class="form-group">
+
+<label>Type de commerce</label>
+
+<select id="businessType">
+
+<option value="barber">💈 Coiffeur / Barbier</option>
+<option value="restaurant">🍕 Restaurant</option>
+<option value="cafe">☕ Café</option>
+<option value="clothing">👕 Vêtements</option>
+<option value="garage">🚗 Garage</option>
+<option value="hotel">🏨 Hôtel</option>
+<option value="beauty">💅 Beauté</option>
+<option value="artisan">🛠️ Artisan</option>
+<option value="other">🏪 Autre</option>
+
+</select>
+
+</div>
+
+<div class="form-group full">
+<label>Description</label>
+<textarea
+id="businessDescription"
+placeholder="Présentez votre commerce, vos spécialités, votre ambiance..."></textarea>
+</div>
+
+<div class="form-group">
+<label>📍 Adresse</label>
+<input id="businessAddress"
+placeholder="Adresse complète">
+</div>
+
+<div class="form-group">
+<label>🏙️ Ville</label>
+<input id="businessCity"
+placeholder="Madrid">
+</div>
+
+<div class="form-group">
+<label>📞 Téléphone</label>
+<input id="businessPhone"
+placeholder="+34 ...">
+</div>
+
+<div class="form-group">
+<label>🌐 Site web</label>
+<input id="businessWebsite"
+placeholder="https://...">
+</div>
+
+<div class="form-group">
+<label>📧 Email</label>
+<input id="businessEmail"
+placeholder="contact@...">
+</div>
+
+<div class="form-group full">
+
+<label>🌍 Langues</label>
+
+<div class="language-grid">
+
+<label class="language">
+<input type="checkbox" value="Français" class="lang">
+🇫🇷 Français
+</label>
+
+<label class="language">
+<input type="checkbox" value="Español" class="lang">
+🇪🇸 Español
+</label>
+
+<label class="language">
+<input type="checkbox" value="English" class="lang">
+🇬🇧 English
+</label>
+
+<label class="language">
+<input type="checkbox" value="العربية" class="lang">
+🇸🇦 العربية
+</label>
+
+<label class="language">
+<input type="checkbox" value="Deutsch" class="lang">
+🇩🇪 Deutsch
+</label>
+
+<label class="language">
+<input type="checkbox" value="Italiano" class="lang">
+🇮🇹 Italiano
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="save-bar">
+
+<span id="generalStatus">
+Prêt à enregistrer
+</span>
+
+<button class="btn btn-primary"
+onclick="saveBusiness()">
+💾 Enregistrer
+</button>
+
+</div>
+
+</div>
+
+
+<!-- SERVICES -->
+
+<div class="panel dashboard-panel hidden"
+id="panel-services">
+
+<h2>🛍️ Services</h2>
+
+<p class="panel-description">
+Ajoutez les prestations proposées par votre commerce.
+</p>
+
+<div id="servicesList" class="dynamic-list"></div>
+
+<button class="btn btn-light add-row"
+onclick="addServiceRow()">
+➕ Ajouter un service
+</button>
+
+<div class="save-bar" style="margin-top:20px">
+
+<span>
+Ajoutez vos prestations et cliquez sur enregistrer.
+</span>
+
+<button class="btn btn-primary"
+onclick="saveServices()">
+💾 Enregistrer
+</button>
+
+</div>
+
+</div>
+
+
+<!-- PRODUCTS -->
+
+<div class="panel dashboard-panel hidden"
+id="panel-products">
+
+<h2>📦 Produits</h2>
+
+<p class="panel-description">
+Ajoutez les produits vendus dans votre commerce.
+</p>
+
+<div id="productsList" class="dynamic-list"></div>
+
+<button class="btn btn-light add-row"
+onclick="addProductRow()">
+➕ Ajouter un produit
+</button>
+
+<div class="save-bar" style="margin-top:20px">
+
+<span>
+Produits visibles par votre assistant.
+</span>
+
+<button class="btn btn-primary"
+onclick="saveProducts()">
+💾 Enregistrer
+</button>
+
+</div>
+
+</div>
+
+
+<!-- HORAIRES -->
+
+<div class="panel dashboard-panel hidden"
+id="panel-hours">
+
+<h2>🕐 Horaires</h2>
+
+<p class="panel-description">
+Indiquez quand votre commerce est ouvert.
+</p>
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Lundi</label>
+<input id="hours_monday" placeholder="10:00 - 20:00">
+</div>
+
+<div class="form-group">
+<label>Mardi</label>
+<input id="hours_tuesday" placeholder="10:00 - 20:00">
+</div>
+
+<div class="form-group">
+<label>Mercredi</label>
+<input id="hours_wednesday" placeholder="10:00 - 20:00">
+</div>
+
+<div class="form-group">
+<label>Jeudi</label>
+<input id="hours_thursday" placeholder="10:00 - 20:00">
+</div>
+
+<div class="form-group">
+<label>Vendredi</label>
+<input id="hours_friday" placeholder="10:00 - 20:00">
+</div>
+
+<div class="form-group">
+<label>Samedi</label>
+<input id="hours_saturday" placeholder="10:00 - 20:00">
+</div>
+
+<div class="form-group">
+<label>Dimanche</label>
+<input id="hours_sunday" placeholder="Fermé">
+</div>
+
+</div>
+
+<div class="save-bar" style="margin-top:20px">
+
+<span>
+Les horaires pourront être utilisés par l'assistant.
+</span>
+
+<button class="btn btn-primary"
+onclick="saveHours()">
+💾 Enregistrer
+</button>
+
+</div>
+
+</div>
+
+
+<!-- FAQ -->
+
+<div class="panel dashboard-panel hidden"
+id="panel-faq">
+
+<h2>❓ Questions fréquentes</h2>
+
+<p class="panel-description">
+Donnez directement à votre assistant les réponses
+aux questions fréquentes.
+</p>
+
+<div id="faqList" class="dynamic-list"></div>
+
+<button class="btn btn-light add-row"
+onclick="addFAQRow()">
+➕ Ajouter une FAQ
+</button>
+
+<div class="save-bar" style="margin-top:20px">
+
+<span>
+Exemple : « Acceptez-vous les réservations ? »
+</span>
+
+<button class="btn btn-primary"
+onclick="saveFAQs()">
+💾 Enregistrer
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ASSISTANT -->
+
+<div class="panel dashboard-panel hidden"
+id="panel-assistant">
+
+<h2>🤖 Mon assistant</h2>
+
+<p class="panel-description">
+Testez votre assistant avec les informations enregistrées.
+</p>
+
+<div class="chat">
+
+<div class="chat-head">
+🤖 Assistant NexaShop
+</div>
+
+<div class="chat-messages"
+id="businessMessages">
+
+<div class="message ai">
+Bonjour 👋 Je suis l'assistant de votre commerce.
+Posez-moi une question !
+</div>
+
+</div>
+
+<div class="chat-input">
+
+<input
+id="businessInput"
+placeholder="Ex : combien coûte une coupe ?"
+onkeydown="if(event.key==='Enter')businessAsk()">
+
+<button onclick="businessAsk()">➤</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+  </section>
+  
