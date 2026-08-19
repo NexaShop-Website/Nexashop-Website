@@ -1,40 +1,2633 @@
 <!DOCTYPE html>
 <html lang="fr">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>const SUPABASE_URL = "https://ldrftvkbqvvnffwdewqr.supabase.co";
-const SUPABASE_KEY = "sb_publishable_6EFLCuFmZ2SlIJUwYttdBQ_xgSBy1Rl";
+<head>
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NexaShop — Assistant IA pour commerces</title>
+
+<title>NexaShop</title>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
 }
 
-:root{
-    --primary:#635bff;
-    --primary2:#8b5cf6;
-    --dark:#111827;
-    --text:#1f2937;
-    --muted:#6b7280;
-    --bg:#f6f7fb;
-    --card:#ffffff;
-    --border:#e5e7eb;
-    --success:#10b981;
+body{
+    font-family:Arial,sans-serif;
+    background:#f6f7fb;
+    color:#111827;
 }
 
-body{
-    font-family:Inter,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
+header{
+    background:white;
+    border-bottom:1px solid #e5e7eb;
+    padding:15px 20px;
+    position:sticky;
+    top:0;
+    z-index:10;
 }
+
+.nav{
+    max-width:1100px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:900;
+    color:#635bff;
+}
+
+button{
+    border:0;
+    padding:12px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.primary{
+    background:#635bff;
+    color:white;
+}
+
+.secondary{
+    background:white;
+    border:1px solid #ddd;
+}
+
+.hero{
+    max-width:900px;
+    margin:auto;
+    padding:80px 20px;
+    text-align:center;
+}
+
+.hero h1{
+    font-size:55px;
+    margin-bottom:20px;
+}
+
+.gradient{
+    color:#635bff;
+}
+
+.hero p{
+    color:#6b7280;
+    font-size:18px;
+    line-height:1.6;
+    margin-bottom:30px;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:30px 20px 70px;
+}
+
+.card{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    padding:25px;
+    margin-bottom:20px;
+}
+
+.form{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.form div{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+input,
+textarea,
+select{
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:15px;
+}
+
+textarea{
+    min-height:110px;
+}
+
+.actions{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+
+.auth{
+    max-width:450px;
+    margin:50px auto;
+}
+
+.auth h2{
+    margin-bottom:20px;
+}
+
+.auth .field{
+    margin-bottom:15px;
+}
+
+.auth label{
+    display:block;
+    margin-bottom:7px;
+    font-weight:bold;
+}
+
+.status{
+    margin-top:15px;
+    padding:12px;
+    border-radius:10px;
+    background:#f3f4f6;
+}
+
+.success{
+    color:#059669;
+}
+
+.error{
+    color:#dc2626;
+}
+
+.dashboard-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.service{
+    display:grid;
+    grid-template-columns:1fr 150px auto;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.product{
+    display:grid;
+    grid-template-columns:1fr 150px auto;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.chat{
+    max-width:650px;
+    margin:30px auto;
+    background:white;
+    border:1px solid #ddd;
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.chat-head{
+    background:#111827;
+    color:white;
+    padding:17px;
+    font-weight:bold;
+}
+
+.messages{
+    min-height:250px;
+    padding:20px;
+}
+
+.message{
+    padding:12px 15px;
+    border-radius:13px;
+    margin-bottom:10px;
+    max-width:80%;
+}
+
+.ai{
+    background:#f0f1f3;
+}
+
+.user{
+    background:#e8e6ff;
+    margin-left:auto;
+}
+
+.chat-input{
+    display:flex;
+    gap:8px;
+    padding:12px;
+    border-top:1px solid #ddd;
+}
+
+.chat-input input{
+    flex:1;
+}
+
+@media(max-width:700px){
+
+    .hero h1{
+        font-size:42px;
+    }
+
+    .form{
+        grid-template-columns:1fr;
+    }
+
+    .full{
+        grid-column:auto;
+    }
+
+    .service,
+    .product{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="nav">
+
+<div class="logo">
+NexaShop
+</div>
+
+<div>
+
+<button class="secondary"
+onclick="showHome()">
+Accueil
+</button>
+
+<button class="primary"
+onclick="openAuth()">
+Mon commerce
+</button>
+
+</div>
+
+</div>
+
+</header>
+
+
+<!-- ACCUEIL -->
+
+<section id="home">
+
+<div class="hero">
+
+<h1>
+Votre commerce.
+<br>
+<span class="gradient">
+Votre assistant IA.
+</span>
+</h1>
+
+<p>
+NexaShop permet aux commerces de créer leur propre
+assistant intelligent afin de répondre aux clients,
+présenter leurs services et produits et aider les
+clients à trouver ce qu'ils recherchent.
+</p>
+
+<button class="primary"
+onclick="openAuth()">
+
+🚀 Créer mon commerce
+
+</button>
+
+</div>
+
+
+<div class="container">
+
+<div class="card">
+
+<h2>
+🤖 Assistant NexaShop
+</h2>
+
+<br>
+
+<p>
+Exemple :
+</p>
+
+<br>
+
+<p>
+👤 « Je voudrais une coupe taper bas avec une photo
+de référence. »
+</p>
+
+<br>
+
+<p>
+🤖 « Bien sûr ! Envoyez-moi votre photo et je pourrai
+vous aider à trouver le service correspondant. »
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- AUTHENTIFICATION -->
+
+<section id="authSection"
+class="container hidden">
+
+<div class="card auth">
+
+<h2>
+👤 Compte commerçant
+</h2>
+
+<div class="field">
+
+<label>Email</label>
+
+<input
+id="email"
+type="email"
+placeholder="vous@email.com">
+
+</div>
+
+
+<div class="field">
+
+<label>Mot de passe</label>
+
+<input
+id="password"
+type="password"
+placeholder="••••••••">
+
+</div>
+
+
+<div class="actions">
+
+<button class="primary"
+onclick="register()">
+
+Créer mon compte
+
+</button>
+
+<button class="secondary"
+onclick="login()">
+
+Se connecter
+
+</button>
+
+</div>
+
+
+<div id="authStatus"
+class="status">
+
+Vous n'êtes pas connecté.
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard"
+class="container hidden">
+
+<div class="dashboard-header">
+
+<div>
+
+<h1>
+🏪 Mon commerce
+</h1>
+
+<p>
+Configurez les informations utilisées par votre assistant IA.
+</p>
+
+</div>
+
+<button class="secondary"
+onclick="logout()">
+
+🚪 Déconnexion
+
+</button>
+
+</div>
+
+
+<!-- INFORMATIONS -->
+
+<div class="card">
+
+<h2>
+🏪 Informations générales
+</h2>
+
+<br>
+
+<div class="form">
+
+<div>
+
+<label>Nom du commerce</label>
+
+<input
+id="businessName"
+placeholder="Ex : Barber Madrid">
+
+</div>
+
+
+<div>
+
+<label>Type de commerce</label>
+
+<select id="businessType">
+
+<option value="barber">
+💈 Coiffeur / Barbier
+</option>
+
+<option value="restaurant">
+🍕 Restaurant
+</option>
+
+<option value="clothing">
+👕 Magasin de vêtements
+</option>
+
+<option value="garage">
+🚗 Garage
+</option>
+
+<option value="hotel">
+🏨 Hôtel
+</option>
+
+<option value="artisan">
+🛠️ Artisan
+</option>
+
+<option value="beauty">
+💅 Beauté
+</option>
+
+<option value="other">
+🏪 Autre
+</option>
+
+</select>
+
+</div>
+
+
+<div class="full">
+
+<label>Description</label>
+
+<textarea
+id="businessDescription"
+placeholder="Décrivez votre commerce..."></textarea>
+
+</div>
+
+
+<div>
+
+<label>📍 Adresse</label>
+
+<input
+id="businessAddress"
+placeholder="Adresse">
+
+</div>
+
+
+<div>
+
+<label>🏙️ Ville</label>
+
+<input
+id="businessCity"
+placeholder="Madrid">
+
+</div>
+
+
+<div>
+
+<label>📞 Téléphone</label>
+
+<input
+id="businessPhone"
+placeholder="+34...">
+
+</div>
+
+
+<div>
+
+<label>🌐 Site web</label>
+
+<input
+id="businessWebsite"
+placeholder="https://...">
+
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button class="primary"
+onclick="saveBusiness()">
+
+💾 Enregistrer le commerce
+
+</button>
+
+</div>
+
+<div id="saveStatus"
+class="status">
+
+Aucune modification enregistrée.
+
+</div>
+
+</div>
+
+
+<!-- SERVICES -->
+
+<div class="card">
+
+<h2>
+🛍️ Services
+</h2>
+
+<br>
+
+<div id="services">
+
+<div class="service">
+
+<input
+placeholder="Ex : Coupe + barbe">
+
+<input
+placeholder="Prix €">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="secondary"
+onclick="addService()">
+
++ Ajouter un service
+
+</button>
+
+</div>
+
+
+<!-- PRODUITS -->
+
+<div class="card">
+
+<h2>
+📦 Produits
+</h2>
+
+<br>
+
+<div id="products">
+
+<div class="product">
+
+<input
+placeholder="Nom du produit">
+
+<input
+placeholder="Prix €">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="secondary"
+onclick="addProduct()">
+
++ Ajouter un produit
+
+</button>
+
+</div>
+
+
+<!-- HORAIRES -->
+
+<div class="card">
+
+<h2>
+🕐 Horaires
+</h2>
+
+<br>
+
+<div class="form">
+
+<div>
+<label>Lundi</label>
+<input id="monday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Mardi</label>
+<input id="tuesday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Mercredi</label>
+<input id="wednesday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Jeudi</label>
+<input id="thursday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Vendredi</label>
+<input id="friday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Samedi</label>
+<input id="saturday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Dimanche</label>
+<input id="sunday" placeholder="Fermé">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FAQ -->
+
+<div class="card">
+
+<h2>
+❓ Questions fréquentes
+</h2>
+
+<br>
+
+<div id="faqs">
+
+<div class="service">
+
+<input
+placeholder="Question">
+
+<input
+placeholder="Réponse">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="secondary"
+onclick="addFAQ()">
+
++ Ajouter une FAQ
+
+</button>
+
+</div>
+
+
+<!-- ASSISTANT -->
+
+<div class="card">
+
+<h2>
+🤖 Votre assistant
+</h2>
+
+<p>
+Il utilisera les informations de votre commerce
+pour répondre à vos clients.
+</p>
+
+<div class="chat">
+
+<div class="chat-head">
+
+🤖 Assistant NexaShop
+
+</div>
+
+<div
+id="messages"
+class="messages">
+
+<div class="message ai">
+
+Bonjour 👋 Je suis l'assistant de votre commerce.
+Posez-moi une question !
+
+</div>
+
+</div>
+
+<div class="chat-input">
+
+<input
+id="chatInput"
+placeholder="Posez une question..."
+onkeydown="if(event.key==='Enter')sendMessage()">
+
+<button
+class="primary"
+onclick="sendMessage()">
+
+➤
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<script>
+
+/* ==================================================
+   SUPABASE
+   ================================================== */
+
+const SUPABASE_URL =
+"https://ldrftvkbqvvnffwdewqr.supabase.co";
+
+
+/*
+=====================================================
+⚠️ C'EST ICI QUE TU COLLES TA PUBLISHABLE KEY
+=====================================================
+
+Remplace uniquement :
+
+COLLE_TA_PUBLISHABLE_KEY_ICI
+
+par ta clé "Publishable" de Supabase.
+
+NE METS PAS la clé Secret.
+NE METS PAS la clé Service Role.
+=====================================================
+*/
+
+const SUPABASE_KEY =
+"sb_publishable_6EFLCuFmZ2SlIJUwYttdBQ_xgSBy1Rl";
+
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+/* ==================================================
+   NAVIGATION
+   ================================================== */
+
+function showHome(){
+
+document.getElementById("home")
+.classList.remove("hidden");
+
+document.getElementById("authSection")
+.classList.add("hidden");
+
+document.getElementById("dashboard")
+.classList.add("hidden");
+
+window.scrollTo(0,0);
+
+}
+
+
+async function openAuth(){
+
+document.getElementById("home")
+.classList.add("hidden");
+
+document.getElementById("authSection")
+.classList.remove("hidden");
+
+document.getElementById("dashboard")
+.classList.add("hidden");
+
+window.scrollTo(0,0);
+
+const {data} =
+await supabaseClient.auth.getSession();
+
+if(data.session){
+
+showDashboard();
+
+}
+
+}
+
+
+/* ==================================================
+   INSCRIPTION
+   ================================================== */
+
+async function register(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+
+const status =
+document.getElementById("authStatus");
+
+
+if(!email || !password){
+
+status.innerHTML =
+"❌ Entre ton email et ton mot de passe.";
+
+status.className="status error";
+
+return;
+
+}
+
+
+if(password.length < 6){
+
+status.innerHTML =
+"❌ Le mot de passe doit contenir au moins 6 caractères.";
+
+status.className="status error";
+
+return;
+
+}
+
+
+status.innerHTML =
+"⏳ Création du compte...";
+
+
+const {data,error} =
+await supabaseClient.auth.signUp({
+
+email:email,
+
+password:password
+
+});
+
+
+if(error){
+
+status.innerHTML =
+"❌ "+error.message;
+
+status.className="status error";
+
+return;
+
+}
+
+
+if(data.session){
+
+status.innerHTML =
+"✅ Compte créé !";
+
+showDashboard();
+
+}else{
+
+status.innerHTML =
+"✅ Compte créé ! Vérifie ton email si Supabase demande une confirmation.";
+
+status.className="status success";
+
+}
+
+}
+
+
+/* ==================================================
+   CONNEXION
+   ================================================== */
+
+async function login(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+
+const status =
+document.getElementById("authStatus");
+
+
+status.innerHTML =
+"⏳ Connexion...";
+
+
+const {data,error} =
+await supabaseClient.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
+
+
+if(error){
+
+status.innerHTML =
+"❌ "+error.message;
+
+status.className="status error";
+
+return;
+
+}
+
+
+status.innerHTML =
+"✅ Connexion réussie.";
+
+status.className="status success";
+
+showDashboard();
+
+}
+
+
+/* ==================================================
+   DECONNEXION
+   ================================================== */
+
+async function logout(){
+
+await supabaseClient.auth.signOut();
+
+showHome();
+
+}
+
+
+/* ==================================================
+   DASHBOARD
+   ================================================== */
+
+async function showDashboard(){
+
+document.getElementById("home")
+.classList.add("hidden");
+
+document.getElementById("authSection")
+.classList.add("hidden");
+
+document.getElementById("dashboard")
+.classList.remove("hidden");
+
+window.scrollTo(0,0);
+
+loadBusiness();
+
+}
+
+
+/* ==================================================
+   ENREGISTRER LE COMMERCE
+   ================================================== */
+
+async function saveBusiness(){
+
+const {data:userData,error:userError} =
+await supabaseClient.auth.getUser();
+
+
+if(userError || !userData.user){
+
+alert("Tu dois être connecté.");
+
+return;
+
+}
+
+
+const user =
+userData.user;
+
+
+const name =
+document.getElementById("businessName")
+.value.trim();
+
+
+if(!name){
+
+document.getElementById("saveStatus")
+.innerHTML =
+"❌ Le nom du commerce est obligatoire.";
+
+return;
+
+}
+
+
+const business={
+
+owner_id:user.id,
+
+name:name,
+
+type:
+document.getElementById("businessType").value,
+
+description:
+document.getElementById("businessDescription").value,
+
+address:
+document.getElementById("businessAddress").value,
+
+city:
+document.getElementById("businessCity").value,
+
+phone:
+document.getElementById("businessPhone").value,
+
+website:
+document.getElementById("businessWebsite").value
+
+};
+
+
+const {data:existing} =
+await supabaseClient
+.from("businesses")
+.select("id")
+.eq("owner_id",user.id)
+.maybeSingle();
+
+
+let result;
+
+
+if(existing){
+
+result =
+await supabaseClient
+.from("businesses")
+.update(business)
+.eq("id",existing.id)
+.select()
+.single();
+
+}else{
+
+result =
+await supabaseClient
+.from("businesses")
+.insert(business)
+.select()
+.single();
+
+}
+
+
+if(result.error){
+
+document.getElementById("saveStatus")
+.innerHTML =
+"❌ "+result.error.message;
+
+document.getElementById("saveStatus")
+.className="status error";
+
+return;
+
+}
+
+
+document.getElementById("saveStatus")
+.innerHTML =
+"✅ Commerce enregistré dans Supabase !";
+
+document.getElementById("saveStatus")
+.className="status success";
+
+}
+
+
+/* ==================================================
+   CHARGER LE COMMERCE
+   ================================================== */
+
+async function loadBusiness(){
+
+const {data:userData} =
+await supabaseClient.auth.getUser();
+
+
+if(!userData.user)return;
+
+
+const {data,error} =
+await supabaseClient
+.from("businesses")
+.select("*")
+.eq("owner_id",userData.user.id)
+.maybeSingle();
+
+
+if(error || !data)return;
+
+
+document.getElementById("businessName").value =
+data.name || "";
+
+document.getElementById("businessType").value =
+data.type || "other";
+
+document.getElementById("businessDescription").value =
+data.description || "";
+
+document.getElementById("businessAddress").value =
+data.address || "";
+
+document.getElementById("businessCity").value =
+data.city || "";
+
+document.getElementById("businessPhone").value =
+data.phone || "";
+
+document.getElementById("businessWebsite").value =
+data.website || "";
+
+}
+
+
+/* ==================================================
+   SERVICES
+   ================================================== */
+
+function addService(){
+
+const container =
+document.getElementById("services");
+
+const row =
+document.createElement("div");
+
+row.className="service";
+
+row.innerHTML=`
+
+<input
+placeholder="Nom du service">
+
+<input
+placeholder="Prix €">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+`;
+
+container.appendChild(row);
+
+}
+
+
+/* ==================================================
+   PRODUITS
+   ================================================== */
+
+function addProduct(){
+
+const container =
+document.getElementById("products");
+
+const row =
+document.createElement("div");
+
+row.className="product";
+
+row.innerHTML=`
+
+<input
+placeholder="Nom du produit">
+
+<input
+placeholder="Prix €">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+`;
+
+container.appendChild(row);
+
+}
+
+
+/* ==================================================
+   FAQ
+   ================================================== */
+
+function addFAQ(){
+
+const container =
+document.getElementById("faqs");
+
+const row =
+document.createElement("div");
+
+row.className="service";
+
+row.innerHTML=`
+
+<input
+placeholder="Question">
+
+<input
+placeholder="Réponse">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+`;
+
+container.appendChild(row);
+
+}
+
+
+/* ==================================================
+   SUPPRIMER UNE LIGNE
+   ================================================== */
+
+function removeRow(button){
+
+button.parentElement.remove();
+
+}
+
+
+/* ==================================================
+   CHAT DEMO
+   ================================================== */
+
+function sendMessage(){
+
+const input =
+document.getElementById("chatInput");
+
+const text =
+input.value.trim();
+
+if(!text)return;
+
+
+const messages =
+document.getElementById("messages");
+
+
+const user =
+document.createElement("div");
+
+user.className="message user";
+
+user.textContent=text;
+
+messages.appendChild(user);
+
+input.value="";
+
+
+setTimeout(()=>{
+
+const ai =
+document.createElement("div");
+
+ai.className="message ai";
+
+ai.textContent =
+"🤖 Je vais bientôt pouvoir répondre à cette question grâce aux informations de votre commerce.";
+
+messages.appendChild(ai);
+
+messages.scrollTop =
+messages.scrollHeight;
+
+},500);
+
+}
+
+
+/* ==================================================
+   VERIFIER LA SESSION AU CHARGEMENT
+   ================================================== */
+
+(async function(){
+
+const {data} =
+await supabaseClient.auth.getSession();
+
+if(data.session){
+
+showDashboard();
+
+}
+
+})();
+
+</script>
+
+</body>
+</html>
+<p>
+NexaShop permet aux commerces de créer leur propre
+assistant intelligent afin de répondre aux clients,
+présenter leurs services et produits et aider les
+clients à trouver ce qu'ils recherchent.
+</p>
+
+<button class="primary"
+onclick="openAuth()">
+
+🚀 Créer mon commerce
+
+</button>
+
+</div>
+
+
+<div class="container">
+
+<div class="card">
+
+<h2>
+🤖 Assistant NexaShop
+</h2>
+
+<br>
+
+<p>
+Exemple :
+</p>
+
+<br>
+
+<p>
+👤 « Je voudrais une coupe taper bas avec une photo
+de référence. »
+</p>
+
+<br>
+
+<p>
+🤖 « Bien sûr ! Envoyez-moi votre photo et je pourrai
+vous aider à trouver le service correspondant. »
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- AUTHENTIFICATION -->
+
+<section id="authSection"
+class="container hidden">
+
+<div class="card auth">
+
+<h2>
+👤 Compte commerçant
+</h2>
+
+<div class="field">
+
+<label>Email</label>
+
+<input
+id="email"
+type="email"
+placeholder="vous@email.com">
+
+</div>
+
+
+<div class="field">
+
+<label>Mot de passe</label>
+
+<input
+id="password"
+type="password"
+placeholder="••••••••">
+
+</div>
+
+
+<div class="actions">
+
+<button class="primary"
+onclick="register()">
+
+Créer mon compte
+
+</button>
+
+<button class="secondary"
+onclick="login()">
+
+Se connecter
+
+</button>
+
+</div>
+
+
+<div id="authStatus"
+class="status">
+
+Vous n'êtes pas connecté.
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard"
+class="container hidden">
+
+<div class="dashboard-header">
+
+<div>
+
+<h1>
+🏪 Mon commerce
+</h1>
+
+<p>
+Configurez les informations utilisées par votre assistant IA.
+</p>
+
+</div>
+
+<button class="secondary"
+onclick="logout()">
+
+🚪 Déconnexion
+
+</button>
+
+</div>
+
+
+<!-- INFORMATIONS -->
+
+<div class="card">
+
+<h2>
+🏪 Informations générales
+</h2>
+
+<br>
+
+<div class="form">
+
+<div>
+
+<label>Nom du commerce</label>
+
+<input
+id="businessName"
+placeholder="Ex : Barber Madrid">
+
+</div>
+
+
+<div>
+
+<label>Type de commerce</label>
+
+<select id="businessType">
+
+<option value="barber">
+💈 Coiffeur / Barbier
+</option>
+
+<option value="restaurant">
+🍕 Restaurant
+</option>
+
+<option value="clothing">
+👕 Magasin de vêtements
+</option>
+
+<option value="garage">
+🚗 Garage
+</option>
+
+<option value="hotel">
+🏨 Hôtel
+</option>
+
+<option value="artisan">
+🛠️ Artisan
+</option>
+
+<option value="beauty">
+💅 Beauté
+</option>
+
+<option value="other">
+🏪 Autre
+</option>
+
+</select>
+
+</div>
+
+
+<div class="full">
+
+<label>Description</label>
+
+<textarea
+id="businessDescription"
+placeholder="Décrivez votre commerce..."></textarea>
+
+</div>
+
+
+<div>
+
+<label>📍 Adresse</label>
+
+<input
+id="businessAddress"
+placeholder="Adresse">
+
+</div>
+
+
+<div>
+
+<label>🏙️ Ville</label>
+
+<input
+id="businessCity"
+placeholder="Madrid">
+
+</div>
+
+
+<div>
+
+<label>📞 Téléphone</label>
+
+<input
+id="businessPhone"
+placeholder="+34...">
+
+</div>
+
+
+<div>
+
+<label>🌐 Site web</label>
+
+<input
+id="businessWebsite"
+placeholder="https://...">
+
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button class="primary"
+onclick="saveBusiness()">
+
+💾 Enregistrer le commerce
+
+</button>
+
+</div>
+
+<div id="saveStatus"
+class="status">
+
+Aucune modification enregistrée.
+
+</div>
+
+</div>
+
+
+<!-- SERVICES -->
+
+<div class="card">
+
+<h2>
+🛍️ Services
+</h2>
+
+<br>
+
+<div id="services">
+
+<div class="service">
+
+<input
+placeholder="Ex : Coupe + barbe">
+
+<input
+placeholder="Prix €">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="secondary"
+onclick="addService()">
+
++ Ajouter un service
+
+</button>
+
+</div>
+
+
+<!-- PRODUITS -->
+
+<div class="card">
+
+<h2>
+📦 Produits
+</h2>
+
+<br>
+
+<div id="products">
+
+<div class="product">
+
+<input
+placeholder="Nom du produit">
+
+<input
+placeholder="Prix €">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="secondary"
+onclick="addProduct()">
+
++ Ajouter un produit
+
+</button>
+
+</div>
+
+
+<!-- HORAIRES -->
+
+<div class="card">
+
+<h2>
+🕐 Horaires
+</h2>
+
+<br>
+
+<div class="form">
+
+<div>
+<label>Lundi</label>
+<input id="monday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Mardi</label>
+<input id="tuesday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Mercredi</label>
+<input id="wednesday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Jeudi</label>
+<input id="thursday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Vendredi</label>
+<input id="friday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Samedi</label>
+<input id="saturday" placeholder="10:00 - 20:00">
+</div>
+
+<div>
+<label>Dimanche</label>
+<input id="sunday" placeholder="Fermé">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FAQ -->
+
+<div class="card">
+
+<h2>
+❓ Questions fréquentes
+</h2>
+
+<br>
+
+<div id="faqs">
+
+<div class="service">
+
+<input
+placeholder="Question">
+
+<input
+placeholder="Réponse">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="secondary"
+onclick="addFAQ()">
+
++ Ajouter une FAQ
+
+</button>
+
+</div>
+
+
+<!-- ASSISTANT -->
+
+<div class="card">
+
+<h2>
+🤖 Votre assistant
+</h2>
+
+<p>
+Il utilisera les informations de votre commerce
+pour répondre à vos clients.
+</p>
+
+<div class="chat">
+
+<div class="chat-head">
+
+🤖 Assistant NexaShop
+
+</div>
+
+<div
+id="messages"
+class="messages">
+
+<div class="message ai">
+
+Bonjour 👋 Je suis l'assistant de votre commerce.
+Posez-moi une question !
+
+</div>
+
+</div>
+
+<div class="chat-input">
+
+<input
+id="chatInput"
+placeholder="Posez une question..."
+onkeydown="if(event.key==='Enter')sendMessage()">
+
+<button
+class="primary"
+onclick="sendMessage()">
+
+➤
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<script>
+
+/* ==================================================
+   SUPABASE
+   ================================================== */
+
+const SUPABASE_URL =
+"https://ldrftvkbqvvnffwdewqr.supabase.co";
+
+
+/*
+=====================================================
+⚠️ C'EST ICI QUE TU COLLES TA PUBLISHABLE KEY
+=====================================================
+
+Remplace uniquement :
+
+COLLE_TA_PUBLISHABLE_KEY_ICI
+
+par ta clé "Publishable" de Supabase.
+
+NE METS PAS la clé Secret.
+NE METS PAS la clé Service Role.
+=====================================================
+*/
+
+const SUPABASE_KEY =
+"COLLE_TA_PUBLISHABLE_KEY_ICI";
+
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+/* ==================================================
+   NAVIGATION
+   ================================================== */
+
+function showHome(){
+
+document.getElementById("home")
+.classList.remove("hidden");
+
+document.getElementById("authSection")
+.classList.add("hidden");
+
+document.getElementById("dashboard")
+.classList.add("hidden");
+
+window.scrollTo(0,0);
+
+}
+
+
+async function openAuth(){
+
+document.getElementById("home")
+.classList.add("hidden");
+
+document.getElementById("authSection")
+.classList.remove("hidden");
+
+document.getElementById("dashboard")
+.classList.add("hidden");
+
+window.scrollTo(0,0);
+
+const {data} =
+await supabaseClient.auth.getSession();
+
+if(data.session){
+
+showDashboard();
+
+}
+
+}
+
+
+/* ==================================================
+   INSCRIPTION
+   ================================================== */
+
+async function register(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+
+const status =
+document.getElementById("authStatus");
+
+
+if(!email || !password){
+
+status.innerHTML =
+"❌ Entre ton email et ton mot de passe.";
+
+status.className="status error";
+
+return;
+
+}
+
+
+if(password.length < 6){
+
+status.innerHTML =
+"❌ Le mot de passe doit contenir au moins 6 caractères.";
+
+status.className="status error";
+
+return;
+
+}
+
+
+status.innerHTML =
+"⏳ Création du compte...";
+
+
+const {data,error} =
+await supabaseClient.auth.signUp({
+
+email:email,
+
+password:password
+
+});
+
+
+if(error){
+
+status.innerHTML =
+"❌ "+error.message;
+
+status.className="status error";
+
+return;
+
+}
+
+
+if(data.session){
+
+status.innerHTML =
+"✅ Compte créé !";
+
+showDashboard();
+
+}else{
+
+status.innerHTML =
+"✅ Compte créé ! Vérifie ton email si Supabase demande une confirmation.";
+
+status.className="status success";
+
+}
+
+}
+
+
+/* ==================================================
+   CONNEXION
+   ================================================== */
+
+async function login(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+
+const status =
+document.getElementById("authStatus");
+
+
+status.innerHTML =
+"⏳ Connexion...";
+
+
+const {data,error} =
+await supabaseClient.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
+
+
+if(error){
+
+status.innerHTML =
+"❌ "+error.message;
+
+status.className="status error";
+
+return;
+
+}
+
+
+status.innerHTML =
+"✅ Connexion réussie.";
+
+status.className="status success";
+
+showDashboard();
+
+}
+
+
+/* ==================================================
+   DECONNEXION
+   ================================================== */
+
+async function logout(){
+
+await supabaseClient.auth.signOut();
+
+showHome();
+
+}
+
+
+/* ==================================================
+   DASHBOARD
+   ================================================== */
+
+async function showDashboard(){
+
+document.getElementById("home")
+.classList.add("hidden");
+
+document.getElementById("authSection")
+.classList.add("hidden");
+
+document.getElementById("dashboard")
+.classList.remove("hidden");
+
+window.scrollTo(0,0);
+
+loadBusiness();
+
+}
+
+
+/* ==================================================
+   ENREGISTRER LE COMMERCE
+   ================================================== */
+
+async function saveBusiness(){
+
+const {data:userData,error:userError} =
+await supabaseClient.auth.getUser();
+
+
+if(userError || !userData.user){
+
+alert("Tu dois être connecté.");
+
+return;
+
+}
+
+
+const user =
+userData.user;
+
+
+const name =
+document.getElementById("businessName")
+.value.trim();
+
+
+if(!name){
+
+document.getElementById("saveStatus")
+.innerHTML =
+"❌ Le nom du commerce est obligatoire.";
+
+return;
+
+}
+
+
+const business={
+
+owner_id:user.id,
+
+name:name,
+
+type:
+document.getElementById("businessType").value,
+
+description:
+document.getElementById("businessDescription").value,
+
+address:
+document.getElementById("businessAddress").value,
+
+city:
+document.getElementById("businessCity").value,
+
+phone:
+document.getElementById("businessPhone").value,
+
+website:
+document.getElementById("businessWebsite").value
+
+};
+
+
+const {data:existing} =
+await supabaseClient
+.from("businesses")
+.select("id")
+.eq("owner_id",user.id)
+.maybeSingle();
+
+
+let result;
+
+
+if(existing){
+
+result =
+await supabaseClient
+.from("businesses")
+.update(business)
+.eq("id",existing.id)
+.select()
+.single();
+
+}else{
+
+result =
+await supabaseClient
+.from("businesses")
+.insert(business)
+.select()
+.single();
+
+}
+
+
+if(result.error){
+
+document.getElementById("saveStatus")
+.innerHTML =
+"❌ "+result.error.message;
+
+document.getElementById("saveStatus")
+.className="status error";
+
+return;
+
+}
+
+
+document.getElementById("saveStatus")
+.innerHTML =
+"✅ Commerce enregistré dans Supabase !";
+
+document.getElementById("saveStatus")
+.className="status success";
+
+}
+
+
+/* ==================================================
+   CHARGER LE COMMERCE
+   ================================================== */
+
+async function loadBusiness(){
+
+const {data:userData} =
+await supabaseClient.auth.getUser();
+
+
+if(!userData.user)return;
+
+
+const {data,error} =
+await supabaseClient
+.from("businesses")
+.select("*")
+.eq("owner_id",userData.user.id)
+.maybeSingle();
+
+
+if(error || !data)return;
+
+
+document.getElementById("businessName").value =
+data.name || "";
+
+document.getElementById("businessType").value =
+data.type || "other";
+
+document.getElementById("businessDescription").value =
+data.description || "";
+
+document.getElementById("businessAddress").value =
+data.address || "";
+
+document.getElementById("businessCity").value =
+data.city || "";
+
+document.getElementById("businessPhone").value =
+data.phone || "";
+
+document.getElementById("businessWebsite").value =
+data.website || "";
+
+}
+
+
+/* ==================================================
+   SERVICES
+   ================================================== */
+
+function addService(){
+
+const container =
+document.getElementById("services");
+
+const row =
+document.createElement("div");
+
+row.className="service";
+
+row.innerHTML=`
+
+<input
+placeholder="Nom du service">
+
+<input
+placeholder="Prix €">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+`;
+
+container.appendChild(row);
+
+}
+
+
+/* ==================================================
+   PRODUITS
+   ================================================== */
+
+function addProduct(){
+
+const container =
+document.getElementById("products");
+
+const row =
+document.createElement("div");
+
+row.className="product";
+
+row.innerHTML=`
+
+<input
+placeholder="Nom du produit">
+
+<input
+placeholder="Prix €">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+`;
+
+container.appendChild(row);
+
+}
+
+
+/* ==================================================
+   FAQ
+   ================================================== */
+
+function addFAQ(){
+
+const container =
+document.getElementById("faqs");
+
+const row =
+document.createElement("div");
+
+row.className="service";
+
+row.innerHTML=`
+
+<input
+placeholder="Question">
+
+<input
+placeholder="Réponse">
+
+<button
+class="secondary"
+onclick="removeRow(this)">
+
+×
+
+</button>
+
+`;
+
+container.appendChild(row);
+
+}
+
+
+/* ==================================================
+   SUPPRIMER UNE LIGNE
+   ================================================== */
+
+function removeRow(button){
+
+button.parentElement.remove();
+
+}
+
+
+/* ==================================================
+   CHAT DEMO
+   ================================================== */
+
+function sendMessage(){
+
+const input =
+document.getElementById("chatInput");
+
+const text =
+input.value.trim();
+
+if(!text)return;
+
+
+const messages =
+document.getElementById("messages");
+
+
+const user =
+document.createElement("div");
+
+user.className="message user";
+
+user.textContent=text;
+
+messages.appendChild(user);
+
+input.value="";
+
+
+setTimeout(()=>{
+
+const ai =
+document.createElement("div");
+
+ai.className="message ai";
+
+ai.textContent =
+"🤖 Je vais bientôt pouvoir répondre à cette question grâce aux informations de votre commerce.";
+
+messages.appendChild(ai);
+
+messages.scrollTop =
+messages.scrollHeight;
+
+},500);
+
+}
+
+
+/* ==================================================
+   VERIFIER LA SESSION AU CHARGEMENT
+   ================================================== */
+
+(async function(){
+
+const {data} =
+await supabaseClient.auth.getSession();
+
+if(data.session){
+
+showDashboard();
+
+}
+
+})();
+
+</script>
+
+</body>
+</html>}
 
 button,input,textarea,select{
     font-family:inherit;
