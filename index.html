@@ -3,38 +3,1028 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NexaShop — Assistant IA</title>
+<title>NexaShop — Assistant IA pour commerces</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f6f8fc;
-    color: #111827;
+:root{
+    --primary:#635bff;
+    --primary2:#8b5cf6;
+    --dark:#111827;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --border:#e5e7eb;
+    --success:#10b981;
 }
 
-header {
-    background: rgba(255,255,255,0.95);
-    border-bottom: 1px solid #e5e7eb;
-    padding: 16px 20px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+body{
+    font-family:Inter,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
 }
 
-.nav {
-    max-width: 1100px;
-    margin: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+button,input,textarea,select{
+    font-family:inherit;
 }
 
+button{
+    cursor:pointer;
+}
+
+header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid var(--border);
+}
+
+.nav{
+    max-width:1200px;
+    margin:auto;
+    padding:15px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:900;
+    color:var(--primary);
+    letter-spacing:-1px;
+}
+
+.nav-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.btn{
+    border:0;
+    padding:12px 17px;
+    border-radius:11px;
+    font-weight:700;
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+}
+
+.btn-primary{
+    background:var(--primary);
+    color:white;
+}
+
+.btn-dark{
+    background:var(--dark);
+    color:white;
+}
+
+.btn-light{
+    background:white;
+    color:var(--dark);
+    border:1px solid var(--border);
+}
+
+.btn-danger{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.hero{
+    max-width:1100px;
+    margin:auto;
+    text-align:center;
+    padding:75px 20px 55px;
+}
+
+.badge{
+    display:inline-block;
+    background:#eeebff;
+    color:#564de0;
+    padding:8px 15px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.hero h1{
+    font-size:clamp(42px,8vw,76px);
+    line-height:.98;
+    letter-spacing:-3px;
+}
+
+.gradient{
+    background:linear-gradient(90deg,var(--primary),var(--primary2));
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.hero p{
+    max-width:700px;
+    margin:25px auto;
+    color:var(--muted);
+    font-size:18px;
+    line-height:1.6;
+}
+
+.hero-buttons{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:25px 20px 70px;
+}
+
+.section-title{
+    text-align:center;
+    margin:30px 0;
+}
+
+.section-title h2{
+    font-size:35px;
+    margin-bottom:8px;
+}
+
+.section-title p{
+    color:var(--muted);
+}
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.feature{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    border:1px solid var(--border);
+}
+
+.feature-icon{
+    font-size:35px;
+    margin-bottom:14px;
+}
+
+.feature p{
+    color:var(--muted);
+    margin-top:8px;
+    line-height:1.5;
+}
+
+.dashboard{
+    display:none;
+    max-width:1200px;
+    margin:auto;
+    padding:25px 20px 80px;
+}
+
+.dashboard.active{
+    display:block;
+}
+
+.dashboard-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.dashboard-head h1{
+    font-size:32px;
+}
+
+.dashboard-head p{
+    color:var(--muted);
+    margin-top:5px;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:240px 1fr;
+    gap:20px;
+}
+
+.sidebar{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:12px;
+    height:max-content;
+    position:sticky;
+    top:85px;
+}
+
+.side-btn{
+    width:100%;
+    text-align:left;
+    background:white;
+    border:0;
+    padding:13px;
+    border-radius:10px;
+    font-weight:700;
+    color:#4b5563;
+    margin-bottom:3px;
+}
+
+.side-btn.active,
+.side-btn:hover{
+    background:#efedff;
+    color:var(--primary);
+}
+
+.panel{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:25px;
+    margin-bottom:20px;
+}
+
+.panel h2{
+    margin-bottom:5px;
+}
+
+.panel-description{
+    color:var(--muted);
+    margin-bottom:22px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:17px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+.form-group label{
+    font-size:14px;
+    font-weight:800;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+    border:1px solid #dfe3ea;
+    border-radius:10px;
+    padding:12px 13px;
+    font-size:15px;
+    outline:none;
+    background:white;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(99,91,255,.1);
+}
+
+.form-group textarea{
+    min-height:110px;
+    resize:vertical;
+}
+
+.checkbox-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.check{
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:11px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.dynamic-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.list-item{
+    display:grid;
+    grid-template-columns:1fr 1fr auto;
+    gap:8px;
+}
+
+.list-item input{
+    border:1px solid #dfe3ea;
+    padding:11px;
+    border-radius:9px;
+}
+
+.photo-box{
+    border:2px dashed #d8dbe5;
+    border-radius:15px;
+    padding:30px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.photo-box input{
+    margin-top:15px;
+}
+
+.save-bar{
+    position:sticky;
+    bottom:15px;
+    background:rgba(255,255,255,.95);
+    border:1px solid var(--border);
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
+    padding:12px;
+    border-radius:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.status{
+    color:var(--success);
+    font-weight:700;
+    font-size:14px;
+}
+
+.map{
+    height:420px;
+    border-radius:22px;
+    overflow:hidden;
+    position:relative;
+    background:
+    linear-gradient(35deg,transparent 45%,#fff 46%,#fff 50%,transparent 51%),
+    linear-gradient(-25deg,transparent 45%,#fff 46%,#fff 50%,transparent 51%),
+    #dce8dc;
+    background-size:250px 180px;
+    border:1px solid #d4ddd4;
+}
+
+.map::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+    repeating-linear-gradient(90deg,transparent 0 100px,rgba(255,255,255,.55) 101px 103px),
+    repeating-linear-gradient(0deg,transparent 0 90px,rgba(255,255,255,.55) 91px 93px);
+    opacity:.7;
+}
+
+.map-pin{
+    position:absolute;
+    z-index:2;
+    width:45px;
+    height:45px;
+    border-radius:50% 50% 50% 0;
+    transform:rotate(-45deg);
+    background:var(--primary);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.2);
+}
+
+.map-pin span{
+    transform:rotate(45deg);
+}
+
+.pin1{left:20%;top:30%}
+.pin2{left:50%;top:22%}
+.pin3{left:70%;top:55%}
+.pin4{left:35%;top:68%}
+.pin5{left:78%;top:25%}
+
+.shops{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.shop{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+}
+
+.shop-icon{
+    width:52px;
+    height:52px;
+    border-radius:14px;
+    background:#eeebff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+    margin-bottom:13px;
+}
+
+.shop p{
+    color:var(--muted);
+    margin:6px 0;
+}
+
+.chat{
+    max-width:650px;
+    margin:auto;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,.07);
+}
+
+.chat-head{
+    background:var(--dark);
+    color:white;
+    padding:18px;
+    font-weight:800;
+}
+
+.chat-messages{
+    min-height:280px;
+    max-height:400px;
+    overflow:auto;
+    padding:20px;
+}
+
+.message{
+    max-width:82%;
+    padding:12px 15px;
+    border-radius:15px;
+    margin-bottom:12px;
+    line-height:1.45;
+}
+
+.message.user{
+    margin-left:auto;
+    background:#ebe9ff;
+}
+
+.message.ai{
+    background:#f1f3f5;
+}
+
+.chat-input{
+    display:flex;
+    gap:8px;
+    padding:12px;
+    border-top:1px solid var(--border);
+}
+
+.chat-input input{
+    flex:1;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:13px;
+}
+
+.chat-input button{
+    border:0;
+    background:var(--primary);
+    color:white;
+    border-radius:10px;
+    padding:0 18px;
+}
+
+.hidden{
+    display:none!important;
+}
+
+footer{
+    text-align:center;
+    padding:35px;
+    color:var(--muted);
+    border-top:1px solid var(--border);
+}
+
+.toast{
+    position:fixed;
+    bottom:25px;
+    left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:#111827;
+    color:white;
+    padding:14px 20px;
+    border-radius:12px;
+    z-index:999;
+    transition:.3s;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+.toast.show{
+    transform:translateX(-50%) translateY(0);
+}
+
+@media(max-width:800px){
+
+    .features,
+    .shops{
+        grid-template-columns:1fr;
+    }
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+
+    .sidebar{
+        position:static;
+        display:flex;
+        overflow-x:auto;
+    }
+
+    .side-btn{
+        min-width:max-content;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full{
+        grid-column:auto;
+    }
+
+    .checkbox-grid{
+        grid-template-columns:1fr;
+    }
+
+    .dashboard-head{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .hero h1{
+        letter-spacing:-2px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="nav">
+
+        <div class="logo">NexaShop</div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-light" onclick="showHome()">
+                Découvrir
+            </button>
+
+            <button class="btn btn-primary" onclick="showDashboard()">
+                Mon commerce
+            </button>
+        </div>
+
+    </div>
+</header>
+
+
+<!-- ================= ACCUEIL ================= -->
+
+<main id="home">
+
+<section class="hero">
+
+    <div class="badge">
+        ✨ AI pour les commerces
+    </div>
+
+    <h1>
+        Votre commerce.
+        <span class="gradient">Votre assistant IA.</span>
+    </h1>
+
+    <p>
+        Créez votre assistant intelligent en quelques minutes.
+        Vos clients peuvent poser leurs questions, chercher vos
+        produits et services et obtenir des réponses 24h/24.
+    </p>
+
+    <div class="hero-buttons">
+
+        <button class="btn btn-primary"
+                onclick="showDashboard()">
+            🚀 Créer mon assistant gratuitement
+        </button>
+
+        <button class="btn btn-light"
+                onclick="document.getElementById('shops').scrollIntoView({behavior:'smooth'})">
+            📍 Découvrir les commerces
+        </button>
+
+    </div>
+
+</section>
+
+
+<section class="container">
+
+    <div class="section-title">
+        <h2>Un assistant pour chaque commerce</h2>
+        <p>NexaShop s'adapte à votre activité.</p>
+    </div>
+
+    <div class="features">
+
+        <div class="feature">
+            <div class="feature-icon">🤖</div>
+            <h3>Assistant IA</h3>
+            <p>
+                Répond aux questions des clients à partir
+                des informations fournies par le commerce.
+            </p>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon">🌍</div>
+            <h3>Multilingue</h3>
+            <p>
+                Les clients peuvent communiquer dans leur langue.
+            </p>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon">📸</div>
+            <h3>Comprend les photos</h3>
+            <p>
+                Les clients pourront envoyer une photo
+                pour expliquer ce qu'ils recherchent.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="container" id="shops">
+
+    <div class="section-title">
+        <h2>📍 Commerces NexaShop</h2>
+        <p>Découvrez les commerces équipés de NexaShop.</p>
+    </div>
+
+    <div class="map">
+
+        <div class="map-pin pin1"><span>✂️</span></div>
+        <div class="map-pin pin2"><span>☕</span></div>
+        <div class="map-pin pin3"><span>🍕</span></div>
+        <div class="map-pin pin4"><span>🚗</span></div>
+        <div class="map-pin pin5"><span>👕</span></div>
+
+    </div>
+
+</section>
+
+
+<section class="container">
+
+    <div class="shops">
+
+        <div class="shop">
+
+            <div class="shop-icon">✂️</div>
+
+            <h3>Barber Madrid</h3>
+
+            <p>💈 Barbier</p>
+            <p>📍 Madrid</p>
+            <p>⭐ 4.8</p>
+
+            <button class="btn btn-primary"
+                    onclick="openDemo('Barber Madrid')">
+                🤖 Parler à l'assistant
+            </button>
+
+        </div>
+
+
+        <div class="shop">
+
+            <div class="shop-icon">🍕</div>
+
+            <h3>Pizza Nova</h3>
+
+            <p>🍕 Restaurant</p>
+            <p>📍 Madrid</p>
+            <p>⭐ 4.9</p>
+
+            <button class="btn btn-primary"
+                    onclick="openDemo('Pizza Nova')">
+                🤖 Parler à l'assistant
+            </button>
+
+        </div>
+
+
+        <div class="shop">
+
+            <div class="shop-icon">🚗</div>
+
+            <h3>Auto Madrid</h3>
+
+            <p>🔧 Garage</p>
+            <p>📍 Madrid</p>
+            <p>⭐ 4.7</p>
+
+            <button class="btn btn-primary"
+                    onclick="openDemo('Auto Madrid')">
+                🤖 Parler à l'assistant
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="container">
+
+    <div class="section-title">
+        <h2>🤖 Testez NexaShop</h2>
+        <p>Voici comment vos clients pourront discuter avec votre assistant.</p>
+    </div>
+
+    <div class="chat">
+
+        <div class="chat-head">
+            🤖 NexaShop Assistant
+        </div>
+
+        <div class="chat-messages" id="demoMessages">
+
+            <div class="message user">
+                Bonjour, combien coûte une coupe ?
+            </div>
+
+            <div class="message ai">
+                Bonjour 👋 Une coupe coûte 15 €.
+                Une coupe + barbe coûte 22 €.
+                Comment puis-je vous aider ?
+            </div>
+
+        </div>
+
+        <div class="chat-input">
+
+            <input
+                id="demoInput"
+                placeholder="Posez une question..."
+                onkeydown="if(event.key==='Enter') sendDemo()">
+
+            <button onclick="sendDemo()">➤</button>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- ================= DASHBOARD ================= -->
+
+<section id="dashboard" class="dashboard">
+
+    <div class="dashboard-head">
+
+        <div>
+            <h1>🏪 Mon commerce</h1>
+            <p>
+                Configurez toutes les informations utilisées
+                par votre futur assistant IA.
+            </p>
+        </div>
+
+        <button class="btn btn-light" onclick="showHome()">
+            ← Retour
+        </button>
+
+    </div>
+
+
+    <div class="dashboard-grid">
+
+        <aside class="sidebar">
+
+            <button class="side-btn active"
+                    onclick="showPanel('general',this)">
+                🏪 Général
+            </button>
+
+            <button class="side-btn"
+                    onclick="showPanel('services',this)">
+                🛍️ Services
+            </button>
+
+            <button class="side-btn"
+                    onclick="showPanel('hours',this)">
+                🕐 Horaires
+            </button>
+
+            <button class="side-btn"
+                    onclick="showPanel('products',this)">
+                📦 Produits
+            </button>
+
+            <button class="side-btn"
+                    onclick="showPanel('photos',this)">
+                📸 Photos
+            </button>
+
+            <button class="side-btn"
+                    onclick="showPanel('faq',this)">
+                ❓ FAQ
+            </button>
+
+            <button class="side-btn"
+                    onclick="showPanel('special',this)">
+                ✨ Fonctions spéciales
+            </button>
+
+            <button class="side-btn"
+                    onclick="showPanel('assistant',this)">
+                🤖 Mon assistant
+            </button>
+
+        </aside>
+
+
+        <div>
+
+            <!-- GENERAL -->
+
+            <div class="panel dashboard-panel" id="panel-general">
+
+                <h2>🏪 Informations générales</h2>
+
+                <p class="panel-description">
+                    Ces informations permettront à NexaShop
+                    de comprendre votre commerce.
+                </p>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>Nom du commerce *</label>
+                        <input id="shopName"
+                               placeholder="Ex : Barber Madrid">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Type de commerce *</label>
+
+                        <select id="shopType"
+                                onchange="changeType()">
+
+                            <option value="barber">
+                                💈 Coiffeur / Barbier
+                            </option>
+
+                            <option value="restaurant">
+                                🍕 Restaurant
+                            </option>
+
+                            <option value="clothing">
+                                👕 Vêtements
+                            </option>
+
+                            <option value="garage">
+                                🚗 Garage
+                            </option>
+
+                            <option value="hotel">
+                                🏨 Hôtel
+                            </option>
+
+                            <option value="artisan">
+                                🛠️ Artisan
+                            </option>
+
+                            <option value="beauty">
+                                💅 Beauté
+                            </option>
+
+                            <option value="other">
+                                🏪 Autre
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label>Description</label>
+
+                        <textarea
+                            id="description"
+                            placeholder="Présentez votre commerce..."></textarea>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>📍 Adresse</label>
+
+                        <input id="address"
+                               placeholder="Adresse complète">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>🏙️ Ville</label>
+
+                        <input id="city"
+                               placeholder="Madrid">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>📞 Téléphone</label>
+
+                        <input id="phone"
+                               placeholder="+34 ...">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>🌐 Site web</label>
+
+                        <input id="website"
+                               placeholder="https://...">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>📧 Email</label>
+
+                        <input id="email"
+                               placeholder="contact@...">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>🌍 Langues disponibles</label>
+
+                        <div class="checkbox-grid">
+
+                            <label class="check">
+                                <input type="checkbox" value="Français">
+                                🇫🇷 Français
+                            </label>
+
+                            <label class="check">
+                                <input type
 .logo {
     font-size: 24px;
     font-weight: 800;
