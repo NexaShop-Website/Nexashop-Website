@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexaShop — Assistant IA</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f6f8fc;
+    color: #111827;
+}
+
+header {
+    background: rgba(255,255,255,0.95);
+    border-bottom: 1px solid #e5e7eb;
+    padding: 16px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.nav {
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+    color: #5b4cff;
+}
+
+.nav button {
+    border: none;
+    background: #111827;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.hero {
+    max-width: 1100px;
+    margin: auto;
+    padding: 70px 20px 50px;
+    text-align: center;
+}
+
+.badge {
+    display: inline-block;
+    background: #ebe9ff;
+    color: #5146d8;
+    padding: 8px 14px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: clamp(40px, 8vw, 70px);
+    line-height: 1;
+    max-width: 800px;
+    margin: auto;
+}
+
+.gradient {
+    background: linear-gradient(90deg, #5b4cff, #9b5cff);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    max-width: 650px;
+    margin: 25px auto;
+    color: #667085;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.primary {
+    background: #5b4cff;
+    color: white;
+    border: none;
+    padding: 15px 22px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.secondary {
+    background: white;
+    color: #111827;
+    border: 1px solid #dfe3ea;
+    padding: 15px 22px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+section {
+    max-width: 1100px;
+    margin: auto;
+    padding: 45px 20px;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.section-title h2 {
+    font-size: 34px;
+}
+
+.section-title p {
+    color: #667085;
+    margin-top: 10px;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e7eaf0;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+}
+
+.icon {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    margin-bottom: 10px;
+}
+
+.card p {
+    color: #667085;
+    line-height: 1.5;
+}
+
+.map {
+    height: 400px;
+    border-radius: 22px;
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(90deg, rgba(255,255,255,.7) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,.7) 1px, transparent 1px),
+        #dfe8df;
+    background-size: 55px 55px;
+    border: 1px solid #d9dfd9;
+}
+
+.road {
+    position: absolute;
+    background: white;
+    height: 25px;
+    transform: rotate(-15deg);
+    width: 120%;
+    top: 45%;
+    left: -10%;
+    box-shadow: 0 2px 5px rgba(0,0,0,.08);
+}
+
+.road.two {
+    transform: rotate(35deg);
+    top: 20%;
+}
+
+.pin {
+    position: absolute;
+    background: #5b4cff;
+    color: white;
+    width: 42px;
+    height: 42px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(91,76,255,.4);
+}
+
+.pin span {
+    transform: rotate(45deg);
+}
+
+.pin.one { left: 25%; top: 40%; }
+.pin.two { left: 55%; top: 25%; }
+.pin.three { left: 72%; top: 62%; }
+.pin.four { left: 40%; top: 70%; }
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.shop-card {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    border: 1px solid #e7eaf0;
+}
+
+.shop-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.shop-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    background: #eeeaff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+}
+
+.shop-card p {
+    color: #667085;
+    margin: 6px 0;
+}
+
+.chat {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    border-radius: 22px;
+    border: 1px solid #e4e7ec;
+    overflow: hidden;
+    box-shadow: 0 15px 50px rgba(0,0,0,.08);
+}
+
+.chat-header {
+    background: #111827;
+    color: white;
+    padding: 18px;
+    font-weight: bold;
+}
+
+.messages {
+    padding: 20px;
+    min-height: 240px;
+}
+
+.message {
+    max-width: 80%;
+    padding: 12px 15px;
+    border-radius: 15px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.user {
+    background: #eeeaff;
+    margin-left: auto;
+}
+
+.ai {
+    background: #f1f3f5;
+}
+
+.chat-input {
+    display: flex;
+    border-top: 1px solid #eee;
+    padding: 12px;
+    gap: 8px;
+}
+
+.chat-input input {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 12px;
+    outline: none;
+}
+
+.chat-input button {
+    background: #5b4cff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0 16px;
+}
+
+.cta {
+    text-align: center;
+    background: #111827;
+    color: white;
+    border-radius: 25px;
+    padding: 55px 20px;
+}
+
+.cta p {
+    color: #c4c8d0;
+    margin: 15px auto 25px;
+}
+
+footer {
+    text-align: center;
+    padding: 35px 20px;
+    color: #667085;
+}
+
+@media(max-width: 750px) {
+    .features,
+    .shop-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        padding-top: 50px;
+    }
+
+    .map {
+        height: 320px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="nav">
+        <div class="logo">NexaShop</div>
+        <button onclick="createAssistant()">Créer mon assistant</button>
+    </div>
+</header>
+
+<main>
+
+<section class="hero">
+
+    <div class="badge">✨ L'intelligence artificielle pour les commerces</div>
+
+    <h1>
+        Votre commerce.
+        <span class="gradient">Votre assistant IA.</span>
+    </h1>
+
+    <p>
+        NexaShop permet aux commerces de créer leur propre assistant
+        intelligent qui répond aux questions de leurs clients,
+        dans leur langue, 24h/24.
+    </p>
+
+    <div class="buttons">
+        <button class="primary" onclick="createAssistant()">
+            Créer mon assistant gratuitement
+        </button>
+
+        <button class="secondary" onclick="scrollToShops()">
+            Découvrir les commerces
+        </button>
+    </div>
+
+</section>
+
+<section>
+
+    <div class="section-title">
+        <h2>Pourquoi NexaShop ?</h2>
+        <p>Un assistant intelligent pour chaque commerce.</p>
+    </div>
+
+    <div class="features">
+
+        <div class="card">
+            <div class="icon">🤖</div>
+            <h3>Assistant IA</h3>
+            <p>
+                Répond automatiquement aux questions des clients
+                grâce aux informations du commerce.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="icon">🌍</div>
+            <h3>Multilingue</h3>
+            <p>
+                Vos clients peuvent discuter avec votre assistant
+                dans leur propre langue.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="icon">📍</div>
+            <h3>Visible sur la carte</h3>
+            <p>
+                Les clients peuvent découvrir les commerces
+                NexaShop autour d'eux.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<section>
+
+    <div class="section-title">
+        <h2>Découvrez les commerces</h2>
+        <p>Trouvez les commerces équipés de NexaShop.</p>
+    </div>
+
+    <div class="map">
+
+        <div class="road"></div>
+        <div class="road two"></div>
+
+        <div class="pin one"><span>✂️</span></div>
+        <div class="pin two"><span>☕</span></div>
+        <div class="pin three"><span>🍕</span></div>
+        <div class="pin four"><span>👟</span></div>
+
+    </div>
+
+</section>
+
+<section id="shops">
+
+    <div class="shop-grid">
+
+        <div class="shop-card">
+            <div class="shop-top">
+                <div class="shop-logo">✂️</div>
+                <div>
+                    <h3>Barber Madrid</h3>
+                    <p>Barbier</p>
+                </div>
+            </div>
+            <p>📍 Madrid</p>
+            <p>⭐ 4.8</p>
+            <button class="primary" onclick="openChat('Barber Madrid')">
+                Parler à l'assistant
+            </button>
+        </div>
+
+        <div class="shop-card">
+            <div class="shop-top">
+                <div class="shop-logo">☕</div>
+                <div>
+                    <h3>Café Central</h3>
+                    <p>Café & restaurant</p>
+                </div>
+            </div>
+            <p>📍 Madrid</p>
+            <p>⭐ 4.7</p>
+            <button class="primary" onclick="openChat('Café Central')">
+                Parler à l'assistant
+            </button>
+        </div>
+
+        <div class="shop-card">
+            <div class="shop-top">
+                <div class="shop-logo">🍕</div>
+                <div>
+                    <h3>Pizza Nova</h3>
+                    <p>Restaurant</p>
+                </div>
+            </div>
+            <p>📍 Madrid</p>
+            <p>⭐ 4.9</p>
+            <button class="primary" onclick="openChat('Pizza Nova')">
+                Parler à l'assistant
+            </button>
+        </div>
+
+    </div>
+
+</section>
+
+<section>
+
+    <div class="section-title">
+        <h2>Essayez un assistant</h2>
+        <p>Voici à quoi pourrait ressembler une conversation.</p>
+    </div>
+
+    <div class="chat">
+
+        <div class="chat-header">
+            🤖 Barber Madrid — Assistant NexaShop
+        </div>
+
+        <div class="messages" id="messages">
+
+            <div class="message user">
+                Bonjour, combien coûte une coupe ?
+            </div>
+
+            <div class="message ai">
+                Bonjour 👋 Une coupe coûte 15 €. 
+                Une coupe + barbe coûte 22 €. 
+                Souhaitez-vous prendre rendez-vous ?
+            </div>
+
+        </div>
+
+        <div class="chat-input">
+
+            <input
+                id="question"
+                placeholder="Posez une question..."
+                onkeydown="if(event.key==='Enter') sendMessage()"
+            >
+
+            <button onclick="sendMessage()">➤</button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section>
+
+    <div class="cta">
+
+        <h2>Créez votre assistant IA</h2>
+
+        <p>
+            Configurez votre commerce et laissez NexaShop
+            répondre à vos clients.
+        </p>
+
+        <button class="primary" onclick="createAssistant()">
+            Commencer gratuitement
+        </button>
+
+    </div>
+
+</section>
+
+</main>
+
+<footer>
+    © 2026 NexaShop — AI for local businesses 🌍
+</footer>
+
+<script>
+
+function createAssistant() {
+    alert(
+        "🚀 La création d'assistant sera disponible dans la prochaine version de NexaShop !"
+    );
+}
+
+function scrollToShops() {
+    document.getElementById("shops").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+function openChat(shop) {
+    alert(
+        "🤖 Assistant de " + shop +
+        "\\n\\nLa vraie conversation IA sera connectée dans la prochaine version."
+    );
+}
+
+function sendMessage() {
+
+    const input = document.getElementById("question");
+    const messages = document.getElementById("messages");
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    const userMessage = document.createElement("div");
+
+    userMessage.className = "message user";
+    userMessage.textContent = text;
+
+    messages.appendChild(userMessage);
+
+    input.value = "";
+
+    setTimeout(() => {
+
+        const aiMessage = document.createElement("div");
+
+        aiMessage.className = "message ai";
+
+        aiMessage.textContent =
+            "🤖 Je suis l'assistant NexaShop. " +
+            "Dans la prochaine version, je pourrai répondre " +
+            "automatiquement grâce aux informations du commerce.";
+
+        messages.appendChild(aiMessage);
+
+        messages.scrollTop = messages.scrollHeight;
+
+    }, 500);
+}
+
+</script>
+
+</body>
+  </html>
