@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>const SUPABASE_URL = "https://ldrftvkbqvvnffwdewqr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_6EFLCuFmZ2SlIJUwYttdBQ_xgSBy1Rl";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NexaShop — Assistant IA pour commerces</title>
